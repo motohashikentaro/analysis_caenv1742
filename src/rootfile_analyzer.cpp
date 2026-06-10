@@ -25,9 +25,10 @@ int main(int argc, char* argv[]){
     }
 
     event ev;
+    loopn lp;
     tree->SetBranchAddress("ev_id", &ev.ev_id);
-    for(int board=0; board<2; board++){
-        for(int ch=0; ch<32; ch++){
+    for(int board=0; board<lp.nboard; board++){
+        for(int ch=0; ch<lp.nch; ch++){
             tree->SetBranchAddress(Form("amp_b%d_ch%02d", board, ch), ev.amp[board][ch]);
         }
     }
@@ -43,16 +44,16 @@ int main(int argc, char* argv[]){
         tree->GetEntry(evt);
 
         TGraph* gr[2][32];
-        for(int board=0; board<2; board++){
-            for(int ch=0; ch<32; ch++){
+        for(int board=0; board<lp.nboard; board++){
+            for(int ch=0; ch<lp.nch; ch++){
                 gr[board][ch] = new TGraph();
             }
         }
 
         float pedestal[2][32] = {0};
-        for(int sample=0; sample<1024; sample++){
-            for(int board=0; board<2; board++){
-                for(int ch=0; ch<32; ch++){
+        for(int sample=0; sample<lp.nsample; sample++){
+            for(int board=0; board<lp.nboard; board++){
+                for(int ch=0; ch<lp.nch; ch++){
                     float tmp_pedestal = 0.0;
                     float signal = 0.0;
 
@@ -80,18 +81,16 @@ int main(int argc, char* argv[]){
         }
         std::cout << evt << " " << gr[0][0]->GetN() << std::endl;
 	    
-        for(int board=0; board<2; board++){
-            for(int ch=0; ch<32; ch++){
-                c->cd(board*32 + ch + 1);
+        for(int board=0; board<lp.nboard; board++){
+            for(int ch=0; ch<lp.nch; ch++){
+                c->cd(board*lp.nch + ch + 1);
                 gr[board][ch]->SetTitle(Form("Board %d Ch %02d", board, ch));
                 gr[board][ch]->GetXaxis()->SetTitle("Sample");
                 gr[board][ch]->GetYaxis()->SetTitle("Signal (ADC - Pedestal)");
-		gr[board][ch]->SetMinimum(-500);
-		gr[board][ch]->SetMaximum(200);
+                gr[board][ch]->SetMinimum(-500);
+                gr[board][ch]->SetMaximum(200);
                 if(evt == 0) gr[board][ch]->Draw("AP");
                 if(evt > 0) gr[board][ch]->Draw("same");
-
-                // delete gr[board][ch];
             }
         }
 
