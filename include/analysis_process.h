@@ -13,6 +13,7 @@ class AnalysisProcess{
         ~AnalysisProcess(){};  // Destructor
 
         void MinAdcDistro();
+        void Multiplicity();
     private:
         RootData& rd_;
 };
