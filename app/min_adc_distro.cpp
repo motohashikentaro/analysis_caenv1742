@@ -7,14 +7,13 @@
 #include <TCanvas.h>
 
 #include "./../include/rootfile_analyzer.h"
+#include "./../include/analysis_process.h"
 
 int main(int argc, char* argv[]){
 
     RootfileAnalyzer rfa(argv[1]);
+    AnalysisProcess ap(rfa.GetRootData());
+    ap.MinAdcDistro();
     
-    std::cout << rfa.GetRootData().nentries_ << std::endl;
-
-    rfa.EventLoop();
-
     return 0;
 }

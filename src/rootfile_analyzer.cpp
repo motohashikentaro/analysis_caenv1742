@@ -34,34 +34,33 @@ RootfileAnalyzer::~RootfileAnalyzer(){
     }
 }
 
-void RootfileAnalyzer::EventLoop(){
-    for(Long64_t evt=0; evt<rd_.nentries_; evt++){
-        rd_.tree_->GetEntry(evt);
+// void RootfileAnalyzer::EventLoop(){
+//     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
+//         rd_.tree_->GetEntry(evt);
 
-        float pedestal[2][32] = {0};
+//         float pedestal[2][32] = {0};
 
-        // Calculate pedestal using the first 50 samples
-        for(int board=0; board<rd_.nboard; board++){
-            for(int ch=0; ch<rd_.nch; ch++){
-                std::array<UShort_t, 50> samples;
-                for(int sample=0; sample<50; sample++){
-                    samples[sample] = rd_.ev_.amp[board][ch][sample];
-                }
-                std::sort(samples.begin(), samples.end());
-                pedestal[board][ch] = (samples[24] + samples[25]) / 2.0; // pedestal = median of the first 50 samples
-            }
-        }
+//         // Calculate pedestal using the first 50 samples
+//         for(int board=0; board<rd_.nboard; board++){
+//             for(int ch=0; ch<rd_.nch; ch++){
+//                 std::array<UShort_t, 50> samples;
+//                 for(int sample=0; sample<50; sample++){
+//                     samples[sample] = rd_.ev_.amp[board][ch][sample];
+//                 }
+//                 std::sort(samples.begin(), samples.end());
+//                 pedestal[board][ch] = (samples[24] + samples[25]) / 2.0; // pedestal = median of the first 50 samples
+//             }
+//         }
 
-        // main process
-        for(int board=0; board<rd_.nboard; board++){
-            for(int ch=0; ch<rd_.nch; ch++){
-                for(int sample=0; sample<rd_.nsample; sample++){
-                    rd_.ev_.amp[board][ch][sample] -= pedestal[board][ch];
-                    // +--------------------------+
-                    // | insert main process here |
-                    // +--------------------------+
-                }
-            }
-        }
-    }
-}
+//         // main process
+//         for(int board=0; board<rd_.nboard; board++){
+//             for(int ch=0; ch<rd_.nch; ch++){
+//                 for(int sample=0; sample<rd_.nsample; sample++){
+//                     rd_.ev_.amp[board][ch][sample] -= pedestal[board][ch];
+//                     // +--------------------------+
+//                     // | insert main process here |
+//                     // +--------------------------+
+//                 }
+//             }
+//         }
+//     }

@@ -5,4 +5,16 @@
 #include <TH2.h>
 #include <TGraph.h>
 
+#include "./rootfile_analyzer.h"
+
+class AnalysisProcess{
+    public:
+        AnalysisProcess(RootData& rd): rd_(rd){};  // Constructor to initialize RootData reference
+        ~AnalysisProcess(){};  // Destructor
+
+        void MinAdcDistro();
+    private:
+        RootData& rd_;
+};
+
 #endif
