@@ -1,3 +1,6 @@
+#ifndef CHANNEL_MAP
+#define CHANNEL_MAP
+
 struct PixelPosition{
     int x;
     int y;
@@ -40,3 +43,5 @@ constexpr PixelPosition kChannelMap[2][16]{
         {2, 0}  // pixel 15  digi ch 31
     }
 };
+
+#endif

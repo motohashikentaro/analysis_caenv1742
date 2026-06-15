@@ -45,6 +45,7 @@ void AnalysisProcess::MinAdcDistro(){
     TCanvas* c2 = new TCanvas("c2", "c2", 800, 600);
     c1->cd();
     hist_min_adc->Draw();
+    c1->SetLogy();
     c1->SaveAs(("./../result/" + std::to_string(target_board) + "_" + std::to_string(target_ch) + "_min_adc_distro.png").c_str());
     c2->cd();
     gr->Draw("ALP");
@@ -117,7 +118,6 @@ void AnalysisProcess::HitMap(){
         }
 
         // main process
-
         for(int ch=0; ch<rd_.nch; ch++){
             double min_adc = std::numeric_limits<double>::max();
             for(int sample=0; sample<rd_.nsample; sample++){
@@ -139,4 +139,50 @@ void AnalysisProcess::HitMap(){
     back_hitmap->Draw();
 
     c1->SaveAs("./../result/pixel_hitmap.png");
+}
+
+void AnalysisProcess::AveragePulse(){
+    std::vector<double> avg_waveform(1024, 0.0);
+    int nhit_evt = 0;
+    int target_board = 1;
+    int target_ch = 24;
+    double thres = -300;
+    TGraph* gr = new TGraph();
+
+    for(Long64_t evt=0; evt<rd_.nentries_; evt++){
+        rd_.tree_->GetEntry(evt);
+
+        // Calcurate pedestal
+        double pedestal = 0;
+        std::array<UShort_t, 50> samples;
+        for(int sample=0; sample<50; sample++){
+            samples[sample] = rd_.ev_.amp[target_board][target_ch][sample];
+        }
+        std::sort(samples.begin(), samples.end());
+        pedestal = (samples[24] + samples[25]) / 2.0;
+
+        // main process
+        double min_adc = std::numeric_limits<double>::max();
+        for(int sample=0; sample<rd_.nsample; sample++){
+            double adc_value = rd_.ev_.amp[target_board][target_ch][sample] - pedestal;
+            min_adc = std::min(min_adc, adc_value);
+        }
+        if(min_adc < thres){
+            for(int sample=0; sample<rd_.nsample; sample++){
+                avg_waveform[sample] += rd_.ev_.amp[target_board][target_ch][sample] - pedestal;
+            }
+            nhit_evt++;
+        }
+    }
+
+    for(int sample=0; sample<rd_.nsample; sample++){
+        double avg_point = avg_waveform[sample] /= nhit_evt;
+        gr->SetPoint(sample, sample, avg_point);
+    }
+
+    std::cout << nhit_evt << "hit evt" << std::endl;
+
+    TCanvas* c1 = new TCanvas("c1", "c1", 800, 600);
+    gr->Draw();
+    c1->SaveAs(("./../result/" + std::to_string(target_board) + "_" + std::to_string(target_ch) + "_avg_waveform.png").c_str());
 }

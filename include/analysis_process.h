@@ -15,6 +15,7 @@ class AnalysisProcess{
         void MinAdcDistro();
         void Multiplicity();
         void HitMap();
+        void AveragePulse();
     private:
         RootData& rd_;
 };
