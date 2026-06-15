@@ -12,7 +12,7 @@ struct event{
 struct RootData{
     event ev_;
     
-    int nboard = 2;
+    int nboard = 2;  // digitizer board
     int nch = 32;
     int nsample = 1024;
 

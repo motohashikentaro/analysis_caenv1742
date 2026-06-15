@@ -14,6 +14,7 @@ class AnalysisProcess{
 
         void MinAdcDistro();
         void Multiplicity();
+        void HitMap();
     private:
         RootData& rd_;
 };
