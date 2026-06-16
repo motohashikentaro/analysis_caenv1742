@@ -14,7 +14,7 @@
 #include "./../include/channel_map.h"
 
 void AnalysisProcess::MinAdcDistro(){
-    TH1D* hist_min_adc = new TH1D("hist_min_adc", "hist_min_adc", 100, -1000, 0);
+    TH1D* hist_min_adc = new TH1D("hist_min_adc", "Minimum ADC Distribution;ADC;Entries", 100, -700, 0);
     TGraph* gr = new TGraph();
     int target_board = 1;
     int target_ch = 24;
@@ -44,22 +44,26 @@ void AnalysisProcess::MinAdcDistro(){
     TCanvas* c1 = new TCanvas("c1", "c1", 800, 600);
     TCanvas* c2 = new TCanvas("c2", "c2", 800, 600);
     c1->cd();
+    hist_min_adc->SetLineColor(kOrange+1);
+    hist_min_adc->SetLineWidth(2);
     hist_min_adc->Draw();
     c1->SetLogy();
-    c1->SaveAs(("./../result/" + std::to_string(target_board) + "_" + std::to_string(target_ch) + "_min_adc_distro.png").c_str());
+    c1->SaveAs((std::string("./../result/") + rd_.file_->GetName() + std::to_string(target_board) + "_" + std::to_string(target_ch) + std::string("_min_adc_distro.png")).c_str());
     c2->cd();
+    gr->SetLineColor(kOrange+1);
+    gr->SetLineWidth(2);
     gr->Draw("ALP");
-    c2->SaveAs(("./../result/" + std::to_string(target_board) + "_" + std::to_string(target_ch) + "_waveform.png").c_str());
+    gr->SetTitle("Waveform;sample;ADC");
+    c2->SaveAs((std::string("./../result/") + rd_.file_->GetName() + std::to_string(target_board) + std::string("_") + std::to_string(target_ch) + std::string("_waveform.png")).c_str());
 
     hist_min_adc->Delete();
-    c1->Delete();
-    c2->Delete();
+    gr->Delete();
 }
 
 void AnalysisProcess::Multiplicity(){
-    TH1D* hist_multi = new TH1D("hist_multi", "hist_multi", 33, -0.5, 32.5);
+    TH1D* hist_multi = new TH1D("hist_multi", "Multiplicity", 33, -0.5, 32.5);
     int target_board = 1;
-    double thres = -300;
+    double thres = -200;
 
     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
         rd_.tree_->GetEntry(evt);
@@ -85,23 +89,25 @@ void AnalysisProcess::Multiplicity(){
             }
             if(min_adc < thres) nhit++;
         }
-        std::cout << nhit << std::endl;
+        // std::cout << nhit << std::endl;
         hist_multi->Fill(nhit);
     }
 
     TCanvas* c1 = new TCanvas("c1", "c1", 800, 600);
+    hist_multi->SetLineColor(kOrange+1);
+    hist_multi->SetLineWidth(2);
     hist_multi->Draw();
     c1->SetLogy();
-    c1->SaveAs(("./../result/" + std::to_string(target_board) + "_multiplicity.png").c_str());
+    c1->SaveAs((std::string("./../result/") + rd_.file_->GetName() + std::to_string(target_board) + std::string("_multiplicity.png")).c_str());
 
     hist_multi->Delete();
 }
 
 void AnalysisProcess::HitMap(){
-    TH2D* front_hitmap = new TH2D("frontHitMap", "HitMap", 4, -0.5, 3.5, 4, -0.5, 3.5);
-    TH2D* back_hitmap = new TH2D("backHitMap", "HitMap", 4, -0.5, 3.5, 4, -0.5, 3.5);
+    TH2D* front_hitmap = new TH2D("frontHitMap", "Front LGAD HitMap", 4, -0.5, 3.5, 4, -0.5, 3.5);
+    TH2D* back_hitmap = new TH2D("backHitMap", "Back LGAD HitMap", 4, -0.5, 3.5, 4, -0.5, 3.5);
     int target_board = 1;
-    double thres = -300;
+    double thres = -200;
 
     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
         rd_.tree_->GetEntry(evt);
@@ -138,7 +144,7 @@ void AnalysisProcess::HitMap(){
     c1->cd(2);
     back_hitmap->Draw();
 
-    c1->SaveAs("./../result/pixel_hitmap.png");
+    c1->SaveAs((std::string("./../result/") + rd_.file_->GetName() + std::string("_pixel_hitmap.png")).c_str());
 }
 
 void AnalysisProcess::AveragePulse(){
@@ -146,7 +152,7 @@ void AnalysisProcess::AveragePulse(){
     int nhit_evt = 0;
     int target_board = 1;
     int target_ch = 24;
-    double thres = -300;
+    double thres = -200;
     TGraph* gr = new TGraph();
 
     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
@@ -180,9 +186,12 @@ void AnalysisProcess::AveragePulse(){
         gr->SetPoint(sample, sample, avg_point);
     }
 
-    std::cout << nhit_evt << "hit evt" << std::endl;
+    // std::cout << nhit_evt << "hit evt" << std::endl;
 
     TCanvas* c1 = new TCanvas("c1", "c1", 800, 600);
+    gr->SetLineColor(kOrange);
+    gr->SetLineWidth(2);
+    gr->SetTitle("Average Waveform;sample;Average ADC");
     gr->Draw();
-    c1->SaveAs(("./../result/" + std::to_string(target_board) + "_" + std::to_string(target_ch) + "_avg_waveform.png").c_str());
+    c1->SaveAs((std::string("./../result/") + rd_.file_->GetName() + std::to_string(target_board) + std::string("_") + std::to_string(target_ch) + std::string("_avg_waveform.png")).c_str());
 }
