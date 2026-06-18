@@ -6,7 +6,7 @@
 
 struct event{
     Long64_t ev_id;
-    UShort_t amp[2][32][1024];
+    float amp[2][32][1024];
 };
 
 struct RootData{

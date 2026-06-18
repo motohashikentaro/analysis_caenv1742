@@ -12,6 +12,8 @@ class AnalysisProcess{
         AnalysisProcess(RootData& rd): rd_(rd){};  // Constructor to initialize RootData reference
         ~AnalysisProcess(){};  // Destructor
 
+        void SimpleWaveform();
+
         void MinAdcDistro();
         void Multiplicity();
         void HitMap();

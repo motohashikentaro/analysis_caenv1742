@@ -18,7 +18,8 @@ all: dirs \
 	 $(BIN_DIR)/multiplicity \
      $(BIN_DIR)/hitmap \
      $(BIN_DIR)/average_waveform \
-     $(BIN_DIR)/min_adc_distro
+     $(BIN_DIR)/min_adc_distro \
+	 $(BIN_DIR)/simple_waveform
 
 dirs:
 	mkdir -p $(DIRS)
@@ -38,11 +39,15 @@ $(BIN_DIR)/average_waveform: app/avg_waveform.cpp $(OBJ)
 $(BIN_DIR)/min_adc_distro: app/min_adc_distro.cpp $(OBJ)
 	$(CXX) $^ -o $@
 
+$(BIN_DIR)/simple_waveform: app/simple_waveform.cpp $(OBJ)
+	$(CXX) $^ -o $@
+
 clean:
 	rm -rf $(BUILD_DIR)
 	rm -f $(BIN_DIR)/multiplicity \
 	      $(BIN_DIR)/hitmap \
 	      $(BIN_DIR)/average_waveform \
-	      $(BIN_DIR)/min_adc_distro
+	      $(BIN_DIR)/min_adc_distro \
+		  $(BIN_DIR)/simple_waveform
 
 .PHONY: all clean dirs

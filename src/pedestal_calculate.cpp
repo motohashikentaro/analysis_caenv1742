@@ -4,7 +4,7 @@
 
 void PedestalCalc::MedianPedestal(){
     float pedestal = 0;
-    std::array<UShort_t, 50> samples;
+    std::array<float, 50> samples;
     for(int sample=0; sample<50; sample++){
         samples[sample] = rd_.ev_.amp[target_board][target_ch][sample];
     }

@@ -13,6 +13,32 @@
 #include "./../include/analysis_process.h"
 #include "./../include/channel_map.h"
 
+void AnalysisProcess::SimpleWaveform(){
+    int target_board = 1;
+    int target_ch = 24;
+    int loop_evt = 1000;
+
+    std::vector<TGraph*> grs(loop_evt);
+
+    TCanvas* c1 = new TCanvas("c1", "c1", 800, 600);
+
+    for(Long64_t evt=0; evt<loop_evt; evt++){
+        rd_.tree_->GetEntry(evt);
+        grs[evt] = new TGraph();
+        for(int sample=0; sample<rd_.nsample; sample++){
+            grs[evt]->SetPoint(sample, sample, rd_.ev_.amp[target_board][target_ch][sample]);
+        }
+        grs[evt]->SetLineWidth(2);
+        grs[evt]->SetLineColor(kOrange+1);
+        grs[evt]->GetYaxis()->SetRangeUser(-500, 100);
+        if(evt==0) grs[evt]->Draw();
+        if(evt>0) grs[evt]->Draw("same");
+    }
+    std::filesystem::path path(rd_.file_->GetName());
+    c1->SaveAs((std::string("./../result/") + path.stem().string()+ "_" + std::to_string(target_board) + "_" + std::to_string(target_ch) + std::string("waveform.png")).c_str());
+
+}
+
 void AnalysisProcess::MinAdcDistro(){
     TH1D* hist_min_adc = new TH1D("hist_min_adc", "Minimum ADC Distribution;ADC;Entries", 100, -700, 0);
     TGraph* gr = new TGraph();
@@ -24,7 +50,7 @@ void AnalysisProcess::MinAdcDistro(){
 
         // Calculate pedestal using the first 50 samples
         float pedestal = 0;
-        std::array<UShort_t, 50> samples;
+        std::array<float, 50> samples;
         for(int sample=0; sample<50; sample++){
             samples[sample] = rd_.ev_.amp[target_board][target_ch][sample];
         }
@@ -70,7 +96,7 @@ void AnalysisProcess::Multiplicity(){
 
         // Calculate pedestal
         float pedestal[rd_.nch] = {0};
-        std::array<UShort_t, 50> samples;
+        std::array<float, 50> samples;
         for(int ch=0; ch<rd_.nch; ch++){
             for(int sample=0; sample<50; sample++){
                 samples[sample] = rd_.ev_.amp[target_board][ch][sample];
@@ -114,7 +140,7 @@ void AnalysisProcess::HitMap(){
 
         // Calculate pedestal
         float pedestal[rd_.nch] = {0};
-        std::array<UShort_t, 50> samples;
+        std::array<float, 50> samples;
         for(int ch=0; ch<rd_.nch; ch++){
             for(int sample=0; sample<50; sample++){
                 samples[sample] = rd_.ev_.amp[target_board][ch][sample];
@@ -160,7 +186,7 @@ void AnalysisProcess::AveragePulse(){
 
         // Calcurate pedestal
         double pedestal = 0;
-        std::array<UShort_t, 50> samples;
+        std::array<float, 50> samples;
         for(int sample=0; sample<50; sample++){
             samples[sample] = rd_.ev_.amp[target_board][target_ch][sample];
         }
