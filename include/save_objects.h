@@ -1,9 +1,19 @@
 #ifndef SAVE_OBJECTS_H
 #define SAVE_OBJECTS_H
 
-#include <TCanvas.h>
+#include "./../include/rootfile_analyzer.h"
+
+#include <string>
 
 class SaveObjects{
     public:
-        void Save
-}
+        SaveObjects(RootData& rd): rd_(rd){};
+        std::string MakeSavename(const std::string& picname,
+                                 int target_board = -1, 
+                                 int target_ch = -1);
+
+    private:
+        RootData& rd_;
+};
+
+#endif

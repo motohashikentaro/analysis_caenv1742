@@ -2,24 +2,31 @@ CXX = crg++
 
 SRC = \
 	src/rootfile_analyzer.cpp \
-	src/analysis_process.cpp
+	src/analysis_process.cpp \
+	src/save_objects.cpp
 
 BIN_DIR = bin
 BUILD_DIR = build
 RESULT_DIR = result
 
-OBJ = \
-	  $(BUILD_DIR)/rootfile_analyzer.o \
-	  $(BUILD_DIR)/analysis_process.o
-
 DIRS = $(BIN_DIR) $(BUILD_DIR) $(RESULT_DIR)
 
+OBJ = \
+	  $(BUILD_DIR)/rootfile_analyzer.o \
+	  $(BUILD_DIR)/analysis_process.o \
+	  $(BUILD_DIR)/save_objects.o
+
+APPS = \
+	   multiplicity \
+	   hitmap \
+	   avg_waveform \
+	   min_adc_distro \
+	   simple_waveform
+
+TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
+
 all: dirs \
-	 $(BIN_DIR)/multiplicity \
-     $(BIN_DIR)/hitmap \
-     $(BIN_DIR)/average_waveform \
-     $(BIN_DIR)/min_adc_distro \
-	 $(BIN_DIR)/simple_waveform
+	 $(TARGETS)
 
 dirs:
 	mkdir -p $(DIRS)
@@ -27,27 +34,11 @@ dirs:
 $(BUILD_DIR)/%.o: src/%.cpp
 	$(CXX) -c $< -o $@
 
-$(BIN_DIR)/multiplicity: app/multiplicity.cpp $(OBJ)
-	$(CXX) $^ -o $@
-
-$(BIN_DIR)/hitmap: app/hitmap.cpp $(OBJ)
-	$(CXX) $^ -o $@
-
-$(BIN_DIR)/average_waveform: app/avg_waveform.cpp $(OBJ)
-	$(CXX) $^ -o $@
-
-$(BIN_DIR)/min_adc_distro: app/min_adc_distro.cpp $(OBJ)
-	$(CXX) $^ -o $@
-
-$(BIN_DIR)/simple_waveform: app/simple_waveform.cpp $(OBJ)
+$(BIN_DIR)/%: app/%.cpp $(OBJ)
 	$(CXX) $^ -o $@
 
 clean:
 	rm -rf $(BUILD_DIR)
-	rm -f $(BIN_DIR)/multiplicity \
-	      $(BIN_DIR)/hitmap \
-	      $(BIN_DIR)/average_waveform \
-	      $(BIN_DIR)/min_adc_distro \
-		  $(BIN_DIR)/simple_waveform
+	rm -f $(TARGETS)
 
 .PHONY: all clean dirs

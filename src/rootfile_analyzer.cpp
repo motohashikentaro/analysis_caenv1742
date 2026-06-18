@@ -1,15 +1,7 @@
-#include <iostream>
-#include <filesystem>
-#include <algorithm>
+#include "./../include/rootfile_analyzer.h"
 
 #include <TFile.h>
 #include <TTree.h>
-#include <TGraph.h>
-#include <TCanvas.h>
-#include <TAxis.h>
-#include <TApplication.h>
-
-#include "./../include/rootfile_analyzer.h"
 
 RootfileAnalyzer::RootfileAnalyzer(char* input_path){
 

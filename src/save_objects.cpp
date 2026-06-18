@@ -1,41 +1,34 @@
-#include <iostream>
-#include <filesystem>
-
-#include <TFile.h>
-#include <TTree.h>
-#include <TCanvas.h>
-
+#include "./../include/save_objects.h"
 #include "./../include/rootfile_analyzer.h"
 
-void SaveObjects_per_board_ch(const std::vector<TObject*>& objects,
-                              const std::string& output_name
-                              ){
-    const int nobj = objects.size();
-    int ncols = std::ceil(std::sqrt(nobj));
-    int nrows = std::ceil(ncols / static_cast<double>(nobj));
+#include <string>
+#include <filesystem>
 
-    int pad_size = 600;
-    int width = ncols * pad_size;
-    int height = nrows * pad_size;
+std::string SaveObjects::MakeSavename(const std::string& picname, int target_board, int target_ch){
+    std::string parent_path = "./../result/";
 
-    TCanvas* c = new TCanvas("c", "c", width, height);
-    c->Divide(ncols, nrows);
-
-    for(size_t i=0; i<objects.size(); ++i){
-        c->cd(i+1);
-        TObject* obj = objects[i];
-
-        if(auto gr = dynamic_cast<TGraph*>(obj)){
-            gPad->SetRightMargin(0.17);
-            gPad->SetTopoMargin(0.17);
-            gr->Draw("ALP");
-        }
-
-        gPad->Update();
+    std::filesystem::path root_path(rd_.file_->GetName());
+    std::string root_name = root_path.stem().string();
+    if(root_name.starts_with("run_")){
+        root_name.erase(3, 1);
     }
 
-    c->SaveAs(("./../result/" + output_name).c_str());
+    std::string b_name = "";
+    std::string c_name = "";
 
-    delete c;
+    if(target_board != -1){
+        b_name = std::string("_b") + std::to_string(target_board);
+    }
+    if(target_ch != -1){
+        c_name = std::string("_c") + std::to_string(target_ch);
+    }
 
+    std::string path = parent_path
+                     + picname
+                     + std::string("_")
+                     + root_name
+                     + b_name 
+                     + c_name 
+                     + std::string(".png");
+    return path;
 }

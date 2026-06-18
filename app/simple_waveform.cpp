@@ -9,12 +9,13 @@
 #include "./../include/rootfile_analyzer.h"
 #include "./../include/analysis_process.h"
 #include "./../include/channel_map.h"
+#include "./../include/save_objects.h"
 
 int main(int argc, char* argv[]){
 
     RootfileAnalyzer rfa(argv[1]);
     AnalysisProcess ap(rfa.GetRootData());
-    ap.SimpleWaveform();
+    ap.SimpleWaveform(1, 24);
     
     return 0;
 }

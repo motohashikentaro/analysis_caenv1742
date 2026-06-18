@@ -1,10 +1,6 @@
 #ifndef ANALYSIS_PROCESS_H
 #define ANALYSIS_PROCESS_H
 
-#include <TH1.h>
-#include <TH2.h>
-#include <TGraph.h>
-
 #include "./rootfile_analyzer.h"
 
 class AnalysisProcess{
@@ -12,9 +8,9 @@ class AnalysisProcess{
         AnalysisProcess(RootData& rd): rd_(rd){};  // Constructor to initialize RootData reference
         ~AnalysisProcess(){};  // Destructor
 
-        void SimpleWaveform();
+        void SimpleWaveform(int target_board, int target_ch);
 
-        void MinAdcDistro();
+        void MinAdcDistro(int target_board, int target_ch);
         void Multiplicity();
         void HitMap();
         void AveragePulse();

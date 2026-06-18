@@ -13,7 +13,7 @@ int main(int argc, char* argv[]){
 
     RootfileAnalyzer rfa(argv[1]);
     AnalysisProcess ap(rfa.GetRootData());
-    ap.MinAdcDistro();
+    ap.MinAdcDistro(1, 24);
     
     return 0;
 }

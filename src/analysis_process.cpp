@@ -1,3 +1,8 @@
+#include "./../include/analysis_process.h"
+#include "./../include/rootfile_analyzer.h"
+#include "./../include/save_objects.h"
+#include "./../include/channel_map.h"
+
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
@@ -6,16 +11,11 @@
 #include <TFile.h>
 #include <TTree.h>
 #include <TH1.h>
+#include <TH2.h>
 #include <TGraph.h>
 #include <TCanvas.h>
 
-#include "./../include/rootfile_analyzer.h"
-#include "./../include/analysis_process.h"
-#include "./../include/channel_map.h"
-
-void AnalysisProcess::SimpleWaveform(){
-    int target_board = 1;
-    int target_ch = 24;
+void AnalysisProcess::SimpleWaveform(int target_board, int target_ch){
     int loop_evt = 1000;
 
     std::vector<TGraph*> grs(loop_evt);
@@ -34,16 +34,17 @@ void AnalysisProcess::SimpleWaveform(){
         if(evt==0) grs[evt]->Draw();
         if(evt>0) grs[evt]->Draw("same");
     }
-    std::filesystem::path path(rd_.file_->GetName());
-    c1->SaveAs((std::string("./../result/") + path.stem().string()+ "_" + std::to_string(target_board) + "_" + std::to_string(target_ch) + std::string("waveform.png")).c_str());
+    
+    SaveObjects so(rd_);
+    c1->SaveAs(so.MakeSavename("waveform", target_board, target_ch).c_str());
 
+    for(auto* gr : grs){
+        delete gr;
+    }
 }
 
-void AnalysisProcess::MinAdcDistro(){
+void AnalysisProcess::MinAdcDistro(int target_board, int target_ch){
     TH1D* hist_min_adc = new TH1D("hist_min_adc", "Minimum ADC Distribution;ADC;Entries", 100, -700, 0);
-    TGraph* gr = new TGraph();
-    int target_board = 1;
-    int target_ch = 24;
 
     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
         rd_.tree_->GetEntry(evt);
@@ -61,29 +62,21 @@ void AnalysisProcess::MinAdcDistro(){
         double min_adc = std::numeric_limits<double>::max();
         for(int sample=0; sample<rd_.nsample; sample++){
             double adc_value = rd_.ev_.amp[target_board][target_ch][sample] - pedestal;
-            if(evt == 0) gr->SetPoint(gr->GetN(), sample, adc_value);
             min_adc = std::min(min_adc, adc_value);
         }
         hist_min_adc->Fill(min_adc);
     }
 
     TCanvas* c1 = new TCanvas("c1", "c1", 800, 600);
-    TCanvas* c2 = new TCanvas("c2", "c2", 800, 600);
-    c1->cd();
     hist_min_adc->SetLineColor(kOrange+1);
     hist_min_adc->SetLineWidth(2);
     hist_min_adc->Draw();
     c1->SetLogy();
-    c1->SaveAs((std::string("./../result/") + rd_.file_->GetName() + std::to_string(target_board) + "_" + std::to_string(target_ch) + std::string("_min_adc_distro.png")).c_str());
-    c2->cd();
-    gr->SetLineColor(kOrange+1);
-    gr->SetLineWidth(2);
-    gr->Draw("ALP");
-    gr->SetTitle("Waveform;sample;ADC");
-    c2->SaveAs((std::string("./../result/") + rd_.file_->GetName() + std::to_string(target_board) + std::string("_") + std::to_string(target_ch) + std::string("_waveform.png")).c_str());
+
+    SaveObjects so(rd_);
+    c1->SaveAs(so.MakeSavename("min_adc_distro", target_board, target_ch).c_str());
 
     hist_min_adc->Delete();
-    gr->Delete();
 }
 
 void AnalysisProcess::Multiplicity(){
