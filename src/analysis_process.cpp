@@ -14,6 +14,7 @@
 #include <TH2.h>
 #include <TGraph.h>
 #include <TCanvas.h>
+#include <TColor.h>
 
 void AnalysisProcess::SimpleWaveform(int target_board, int target_ch){
     int loop_evt = 1000;
@@ -41,6 +42,129 @@ void AnalysisProcess::SimpleWaveform(int target_board, int target_ch){
     for(auto* gr : grs){
         delete gr;
     }
+}
+
+void AnalysisProcess::SingleWaveform(int target_board, int target_ch, int target_evt){
+    TCanvas* c1 = new TCanvas("c1", "c1", 800, 600);
+    TGraph* gr = new TGraph();
+
+    for(Long64_t evt=0; evt<rd_.nentries_; evt++){
+        rd_.tree_->GetEntry(evt);
+        if(evt == target_evt){   
+            for(int sample=0; sample<rd_.nsample; sample++){
+                gr->SetPoint(sample, sample, rd_.ev_.amp[target_board][target_ch][sample]);
+            }
+        }
+        if(evt > target_evt) break;
+    }
+
+    gr->SetLineWidth(2);
+    gr->SetLineColor(kOrange+1);
+    gr->GetYaxis()->SetRangeUser(-500, 100);
+    gr->Draw("AL");
+    
+    SaveObjects so(rd_);
+    c1->SaveAs(so.MakeSavename("single_waveform", target_board, target_ch).c_str());
+
+    delete gr;
+}
+
+void AnalysisProcess::SeparateWaveform(int target_board, int target_ch){
+    int loop_evt = 500;
+    int select_count = 0;
+    int select_count_hit = 0;
+    int select_count_noise = 0;
+
+    TCanvas* c1 = new TCanvas("c1", "c1", 800, 600);
+    c1->Divide(2, 2);
+
+    for(Long64_t evt=0; evt<loop_evt; evt++){
+        rd_.tree_->GetEntry(evt);
+
+        // pedestal calculate
+        float pedestal = 0;
+        std::array<float, 50> samples;
+        for(int sample=0; sample<50; sample++){
+            samples[sample] = rd_.ev_.amp[target_board][target_ch][sample];
+        }
+        std::sort(samples.begin(), samples.end());
+        pedestal = (samples[24] + samples[25]) / 2.0;
+
+        // evt search
+        double min_adc = std::numeric_limits<double>::max();
+        int min_adc_id = 0;
+        for(int sample=0; sample<rd_.nsample; sample++){
+            double adc_value = rd_.ev_.amp[target_board][target_ch][sample] - pedestal;
+            if(adc_value < min_adc){
+                min_adc = adc_value;
+                min_adc_id = sample;
+            }
+        }
+
+        if(50 < min_adc_id && min_adc < -100){  // hit selection
+            if(select_count_hit >= 2) continue;
+            std::cout << "hit evt = " << evt << std::endl;
+            std::vector<TGraph*> grs(4);
+            for(int i=0; i<4; i++) grs[i] = new TGraph();
+            for(int sample=0; sample<rd_.nsample; sample++){
+                double adc_value = rd_.ev_.amp[target_board][target_ch][sample] - pedestal;
+                int gr_id = sample/256;
+                grs[gr_id]->SetPoint(grs[gr_id]->GetN(), sample, adc_value);
+            }
+            for(int gr_id=0; gr_id<4; gr_id++){
+                c1->cd(gr_id+1);
+                grs[gr_id]->SetLineWidth(2);
+                grs[gr_id]->GetYaxis()->SetRangeUser(-500, 100);
+                if(select_count_hit == 0){
+                    grs[gr_id]->SetLineColor(kOrange+1);
+                }else{
+                    grs[gr_id]->SetLineColor(kAzure+4);
+                }
+                if(select_count == 0){
+                    grs[gr_id]->Draw("AL");
+                }else{
+                    grs[gr_id]->Draw("same");
+                }
+            }
+            select_count++;
+            select_count_hit++;
+        }
+
+        if(-100 < min_adc && min_adc < -50){  // noise selection
+            if(select_count_noise >= 3) continue;
+            std::cout << "noise evt = " << evt << std::endl;
+            std::vector<TGraph*> grs(4);
+            for(int i=0; i<4; i++) grs[i] = new TGraph();
+            for(int sample=0; sample<rd_.nsample; sample++){
+                double adc_value = rd_.ev_.amp[target_board][target_ch][sample] - pedestal;
+                int gr_id = sample/256;
+                grs[gr_id]->SetPoint(grs[gr_id]->GetN(), sample, adc_value);
+            }
+            for(int gr_id=0; gr_id<4; gr_id++){
+                c1->cd(gr_id+1);
+                grs[gr_id]->SetLineWidth(2);
+                grs[gr_id]->GetYaxis()->SetRangeUser(-500, 100);
+                if(select_count_noise == 0){
+                    grs[gr_id]->SetLineColor(kGray);
+                }else if(select_count_noise == 1){
+                    grs[gr_id]->SetLineColor(kRed);
+                }else if(select_count_noise == 2){
+                    grs[gr_id]->SetLineColor(kBlack);
+                }
+                if(select_count == 0){
+                    grs[gr_id]->Draw("AL");
+                }else{
+                    grs[gr_id]->Draw("same");
+                }
+            }
+            select_count++;
+            select_count_noise++;
+        }
+        if(select_count >= 5) break;
+    }
+
+    SaveObjects so(rd_);
+    c1->SaveAs(so.MakeSavename("separate_waveform", target_board, target_ch).c_str());
 }
 
 void AnalysisProcess::MinAdcDistro(int target_board, int target_ch){

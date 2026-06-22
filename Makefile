@@ -21,7 +21,9 @@ APPS = \
 	   hitmap \
 	   avg_waveform \
 	   min_adc_distro \
-	   simple_waveform
+	   simple_waveform \
+	   separate_waveform \
+	   single_waveform
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 
