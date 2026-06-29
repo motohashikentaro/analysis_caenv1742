@@ -23,7 +23,8 @@ APPS = \
 	   min_adc_distro \
 	   simple_waveform \
 	   separate_waveform \
-	   single_waveform
+	   single_waveform \
+	   hit_selection
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 
