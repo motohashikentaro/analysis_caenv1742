@@ -3,7 +3,7 @@
 #include <TCanvas.h>
 
 int main(){
-    TFile* f = TFile::Open("/home/motohashi/work/analysis_caenv1742/bin/hit_feature_th50.root", "READ");
+    TFile* f = TFile::Open("/home/motohashi/work/analysis_caenv1742/bin/hit_feature_th30.root", "READ");
     TTree* t = (TTree*)f->Get("tree");
 
     TCanvas* c1 = new TCanvas("c1", "c1", 1800, 1600);
@@ -30,7 +30,7 @@ int main(){
     c1->cd(6);
     t->Draw("charge:tot", "board==1 && ch==24 && peak_adc<-50 && tot > 2", "colz");
 
-    c1->SaveAs("../result/hit_ana_th50overtot2.png");
+    c1->SaveAs("../result/hit_ana_th30.png");
 
     return 0;
 }

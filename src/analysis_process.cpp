@@ -36,11 +36,15 @@ void AnalysisProcess::HitSelection(){
     tree->Branch("raise_sample", &ef.raise_sample);
     tree->Branch("fall_sample", &ef.fall_sample);
 
+    tree->Branch("raise_time", &ef.raise_time);
+    tree->Branch("fall_time", &ef.fall_time);
+    tree->Branch("true_tot", &ef.true_tot);
+
     tree->Branch("charge", &ef.charge);
 
     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
         rd_.tree_->GetEntry(evt);
-        ef.thres=-50;
+        ef.thres=-30;
         ef.evt=evt;
         for(int board=0; board<rd_.nboard; board++){
             ef.board=board;
@@ -65,7 +69,7 @@ void AnalysisProcess::HitSelection(){
                     }
                 }
 
-                // raise time
+                // raise sample
                 ef.raise_sample=-1;
                 for(int sample=0; sample<(int)ef.peak_sample; sample++){
                     double adc = rd_.ev_.amp[board][ch][sample] - ef.pedestal;
@@ -75,7 +79,7 @@ void AnalysisProcess::HitSelection(){
                     }
                 }
 
-                // fall time
+                // fall sample
                 ef.fall_sample=-1;
                 for(int sample=(int)ef.peak_sample; sample<rd_.nsample; sample++){
                     double adc = rd_.ev_.amp[board][ch][sample] - ef.pedestal;

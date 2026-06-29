@@ -14,6 +14,9 @@ struct EvtFeature{
     double peak_sample;
     double raise_sample;
     double fall_sample;
+    double raise_time;
+    double fall_time;
+    double true_tot;
     double charge;
 };
 
