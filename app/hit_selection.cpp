@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
 
     RootfileAnalyzer rfa(argv[1]);
     AnalysisProcess ap(rfa.GetRootData());
-    ap.HitSelection();
+    ap.HitSelection(argv[2], std::stod(argv[3])); // filename, threshold
     
     return 0;
 }

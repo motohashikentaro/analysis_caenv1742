@@ -25,7 +25,7 @@ class AnalysisProcess{
         AnalysisProcess(RootData& rd): rd_(rd){};  // Constructor to initialize RootData reference
         ~AnalysisProcess(){};  // Destructor
 
-        void HitSelection();
+        void HitSelection(const char* filename, double threshold);
 
         void SimpleWaveform(int target_board, int target_ch);
         void SingleWaveform(int target_board, int target_ch, int target_evt);

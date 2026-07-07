@@ -16,11 +16,11 @@
 #include <TCanvas.h>
 #include <TColor.h>
 
-void AnalysisProcess::HitSelection(){
+void AnalysisProcess::HitSelection(const char* filename, double threshold){
     constexpr int kskipsample=50;
     EvtFeature ef;
 
-    TFile* fout = new TFile("hit_feature.root", "RECREATE");
+    TFile* fout = new TFile((std::string(filename) + ".root").c_str(), "RECREATE");
     TTree* tree = new TTree("tree", "Hit Features");    
 
     tree->Branch("evt", &ef.evt);
@@ -44,7 +44,7 @@ void AnalysisProcess::HitSelection(){
 
     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
         rd_.tree_->GetEntry(evt);
-        ef.thres=-30;
+        ef.thres=threshold;
         ef.evt=evt;
         for(int board=0; board<rd_.nboard; board++){
             ef.board=board;
