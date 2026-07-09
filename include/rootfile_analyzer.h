@@ -17,6 +17,8 @@ struct RootData{
     int nsample = 1024;
 
     TFile* file_;
+    std::string filename_;
+    std::string run_number_;
     TTree* tree_;
     Long64_t nentries_;
 };

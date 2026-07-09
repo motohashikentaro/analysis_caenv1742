@@ -9,12 +9,13 @@
 #include "./../include/rootfile_analyzer.h"
 #include "./../include/analysis_process.h"
 #include "./../include/channel_map.h"
+#include "./../include/hit_selection.h"
 
 int main(int argc, char* argv[]){
 
     RootfileAnalyzer rfa(argv[1]);
-    AnalysisProcess ap(rfa.GetRootData());
-    ap.HitSelection(argv[2], std::stod(argv[3])); // filename, threshold
+    HitSelection hs(rfa.GetRootData());
+    hs.FeatureExtraction(); 
     
     return 0;
 }

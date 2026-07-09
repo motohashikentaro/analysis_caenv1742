@@ -3,7 +3,8 @@ CXX = crg++
 SRC = \
 	src/rootfile_analyzer.cpp \
 	src/analysis_process.cpp \
-	src/save_objects.cpp
+	src/save_objects.cpp \
+	src/hit_selection.cpp
 
 BIN_DIR = bin
 BUILD_DIR = build
@@ -14,7 +15,8 @@ DIRS = $(BIN_DIR) $(BUILD_DIR) $(RESULT_DIR)
 OBJ = \
 	  $(BUILD_DIR)/rootfile_analyzer.o \
 	  $(BUILD_DIR)/analysis_process.o \
-	  $(BUILD_DIR)/save_objects.o
+	  $(BUILD_DIR)/save_objects.o \
+	  $(BUILD_DIR)/hit_selection.o
 
 APPS = \
 	   multiplicity \
@@ -24,7 +26,7 @@ APPS = \
 	   simple_waveform \
 	   separate_waveform \
 	   single_waveform \
-	   hit_selection
+	   hit_selection 
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 

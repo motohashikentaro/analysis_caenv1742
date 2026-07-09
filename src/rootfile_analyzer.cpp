@@ -1,11 +1,18 @@
 #include "./../include/rootfile_analyzer.h"
 
+#include <filesystem>
+
 #include <TFile.h>
 #include <TTree.h>
 
 RootfileAnalyzer::RootfileAnalyzer(char* input_path){
 
     rd_.file_ = TFile::Open(input_path);
+
+    std::filesystem::path path(input_path);
+    rd_.filename_ = path.stem().string();
+    
+    rd_.run_number_ = rd_.filename_.substr(4);
 
     rd_.tree_ = (TTree*)rd_.file_->Get("tree");
 
