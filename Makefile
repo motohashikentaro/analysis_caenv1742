@@ -1,5 +1,7 @@
 CXX = crg++
 
+CXXFLAGS = 
+
 SRC = \
 	src/rootfile_analyzer.cpp \
 	src/analysis_process.cpp \
@@ -37,10 +39,10 @@ dirs:
 	mkdir -p $(DIRS)
 
 $(BUILD_DIR)/%.o: src/%.cpp
-	$(CXX) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 $(BIN_DIR)/%: app/%.cpp $(OBJ)
-	$(CXX) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $@
 
 clean:
 	rm -rf $(BUILD_DIR)
