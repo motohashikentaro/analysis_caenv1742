@@ -3,6 +3,11 @@
 
 #include "./rootfile_analyzer.h"
 
+#include <array>
+
+inline constexpr std::array<int, 4> thresholds = {30, 50, 70, 90};
+inline constexpr size_t nthres = thresholds.size();
+
 struct EvtFeature{
     double evt;
 
@@ -14,25 +19,10 @@ struct EvtFeature{
     double peak_adc;  // minimum adc value
     int peak_time;  // minimum sample number
 
-    double raise_time_th30;  // time when the waveform crosses the threshold = -30
-    double fall_time_th30;  // time when the waveform crosses the threshold = -30
-    double charge_th30;  // integral of the waveform below the threshold = -30
-    double tot_th30;  // time difference between raise_time_th30 and fall_time_th30
-
-    double raise_time_th50;
-    double fall_time_th50;
-    double charge_th50;
-    double tot_th50;
-
-    double raise_time_th70;
-    double fall_time_th70;
-    double charge_th70;
-    double tot_th70;
-
-    double raise_time_th90;
-    double fall_time_th90;
-    double charge_th90;
-    double tot_th90;
+    std::array<double, nthres> raise_times;  // time when the waveform crosses the threshold
+    std::array<double, nthres> fall_times;  // time when the waveform crosses the threshold
+    std::array<double, nthres> charges;  // integral of the waveform below the threshold
+    std::array<double, nthres> tots;  // time difference between raise_time and fall_time
 };
 
 class HitSelection{
@@ -40,6 +30,7 @@ class HitSelection{
         HitSelection(RootData& rd): rd_(rd){};
 
         void FeatureExtraction();
+        void HitExtraction();
 
     private:
         RootData& rd_;

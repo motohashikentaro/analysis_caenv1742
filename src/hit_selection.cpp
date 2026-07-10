@@ -14,7 +14,6 @@
 void HitSelection::FeatureExtraction(){
     constexpr int kskipsample=10;
     constexpr int kpedestalcalc=50;
-    constexpr int thresholds[] = {30, 50, 70, 90};
     EvtFeature ef;
 
     TFile* fout = new TFile(("./../data/feature/feature_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
@@ -30,25 +29,12 @@ void HitSelection::FeatureExtraction(){
     tree->Branch("peak_adc", &ef.peak_adc);
     tree->Branch("peak_time", &ef.peak_time);
 
-    tree->Branch("raise_time_th30", &ef.raise_time_th30);
-    tree->Branch("fall_time_th30", &ef.fall_time_th30);
-    tree->Branch("charge_th30", &ef.charge_th30);
-    tree->Branch("tot_th30", &ef.tot_th30);
-
-    tree->Branch("raise_time_th50", &ef.raise_time_th50);
-    tree->Branch("fall_time_th50", &ef.fall_time_th50);
-    tree->Branch("charge_th50", &ef.charge_th50);
-    tree->Branch("tot_th50", &ef.tot_th50);
-
-    tree->Branch("raise_time_th70", &ef.raise_time_th70);
-    tree->Branch("fall_time_th70", &ef.fall_time_th70);
-    tree->Branch("charge_th70", &ef.charge_th70);
-    tree->Branch("tot_th70", &ef.tot_th70);
-
-    tree->Branch("raise_time_th90", &ef.raise_time_th90);
-    tree->Branch("fall_time_th90", &ef.fall_time_th90);
-    tree->Branch("charge_th90", &ef.charge_th90);
-    tree->Branch("tot_th90", &ef.tot_th90);
+    for(size_t ithres=0; ithres<nthres; ithres++){
+        tree->Branch(("raise_time_th" + std::to_string(thresholds[ithres])).c_str(), &ef.raise_times[ithres]);
+        tree->Branch(("fall_time_th" + std::to_string(thresholds[ithres])).c_str(), &ef.fall_times[ithres]);
+        tree->Branch(("charge_th" + std::to_string(thresholds[ithres])).c_str(), &ef.charges[ithres]);
+        tree->Branch(("tot_th" + std::to_string(thresholds[ithres])).c_str(), &ef.tots[ithres]);
+    }
 
     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
         rd_.tree_->GetEntry(evt);
@@ -84,26 +70,13 @@ void HitSelection::FeatureExtraction(){
                 }
 
                 // calculate feature that depends on threshold
-                ef.raise_time_th30=-1;
-                ef.fall_time_th30=-1;
-                ef.charge_th30=0.0;
-                ef.tot_th30=0.0;
+                ef.raise_times.fill(-1.0);
+                ef.fall_times.fill(-1.0);
+                ef.charges.fill(0.0);
+                ef.tots.fill(0.0);
 
-                ef.raise_time_th50=-1;
-                ef.fall_time_th50=-1;
-                ef.charge_th50=0.0;
-                ef.tot_th50=0.0;
-
-                ef.raise_time_th70=-1;
-                ef.fall_time_th70=-1;
-                ef.charge_th70=0.0;
-                ef.tot_th70=0.0;
-
-                ef.raise_time_th90=-1;
-                ef.fall_time_th90=-1;
-                ef.charge_th90=0.0;
-                ef.tot_th90=0.0;
-                for(int thres : thresholds){
+                for(size_t ithres=0; ithres<nthres; ithres++){
+                    int thres = thresholds[ithres];
                     if(ef.peak_adc > -thres) continue;
 
                     // +------------+
@@ -115,10 +88,7 @@ void HitSelection::FeatureExtraction(){
 
                         if(adc1 < -thres && adc2 >= -thres){
                             double frac = (-thres - adc2) / (adc1 - adc2);
-                            if(thres == 30) ef.raise_time_th30 = (sample - 1) + frac;
-                            if(thres == 50) ef.raise_time_th50 = (sample - 1) + frac;
-                            if(thres == 70) ef.raise_time_th70 = (sample - 1) + frac;
-                            if(thres == 90) ef.raise_time_th90 = (sample - 1) + frac;
+                            ef.raise_times[ithres] = (sample - 1) + frac;
                             break;
                         }
                     }
@@ -132,10 +102,7 @@ void HitSelection::FeatureExtraction(){
 
                         if(adc1 < -thres && adc2 >= -thres){
                             double frac = (-thres - adc1) / (adc2 - adc1);
-                            if(thres == 30) ef.fall_time_th30 = sample + frac;
-                            if(thres == 50) ef.fall_time_th50 = sample + frac;
-                            if(thres == 70) ef.fall_time_th70 = sample + frac;
-                            if(thres == 90) ef.fall_time_th90 = sample + frac;
+                            ef.fall_times[ithres] = sample + frac;
                             break;
                         }
                     }
@@ -143,23 +110,15 @@ void HitSelection::FeatureExtraction(){
                     // +---------------------+
                     // | time over threshold |
                     // +---------------------+
-                    if(ef.raise_time_th30 >= 0 && ef.fall_time_th30 >= 0) ef.tot_th30 = ef.fall_time_th30 - ef.raise_time_th30;
-                    if(ef.raise_time_th50 >= 0 && ef.fall_time_th50 >= 0) ef.tot_th50 = ef.fall_time_th50 - ef.raise_time_th50;
-                    if(ef.raise_time_th70 >= 0 && ef.fall_time_th70 >= 0) ef.tot_th70 = ef.fall_time_th70 - ef.raise_time_th70;
-                    if(ef.raise_time_th90 >= 0 && ef.fall_time_th90 >= 0) ef.tot_th90 = ef.fall_time_th90 - ef.raise_time_th90;
+                    if(ef.raise_times[ithres] >= 0 && ef.fall_times[ithres] >= 0){
+                        ef.tots[ithres] = ef.fall_times[ithres] - ef.raise_times[ithres];
+                    }
 
                     // +--------+
                     // | charge |
                     // +--------+
-                    double start = -1.0;
-                    double end = -1.0;
-                    switch (thres){
-                    case 30: start = ef.raise_time_th30; end = ef.fall_time_th30; break;
-                    case 50: start = ef.raise_time_th50; end = ef.fall_time_th50; break;
-                    case 70: start = ef.raise_time_th70; end = ef.fall_time_th70; break;
-                    case 90: start = ef.raise_time_th90; end = ef.fall_time_th90; break;
-                    default: break;
-                    }
+                    double start = ef.raise_times[ithres];
+                    double end = ef.fall_times[ithres];
                     if(start < 0.0 || end < 0.0) continue;
                     double charge = 0.0;
                     int idx_start = static_cast<int>(std::ceil(start));
@@ -181,13 +140,7 @@ void HitSelection::FeatureExtraction(){
                     double h_end_idx = (-thres) - (rd_.ev_.amp[board][ch][idx_end] - ef.pedestal);
                     charge = charge + (w_end*(h_end_edge + h_end_idx) / 2.0);
                     
-                    switch (thres){
-                    case 30: ef.charge_th30 = charge; break;
-                    case 50: ef.charge_th50 = charge; break;
-                    case 70: ef.charge_th70 = charge; break;
-                    case 90: ef.charge_th90 = charge; break;
-                    default: break;
-                    }
+                    ef.charges[ithres] = charge;
                 }  // end of threshold loop
                 tree->Fill();
             }  // end of ch loop
@@ -201,4 +154,48 @@ void HitSelection::FeatureExtraction(){
     fout->Close();
 
     delete fout;
+}
+
+void HitSelection::HitExtraction(){
+    constexpr int target_board = 1;
+    constexpr int thresholds[] = {30, 50, 70, 90};
+
+    // create root file
+    TFile* fout = new TFile(("./../data/hit/hit_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
+    std::array<TDirectory*, nthres> dirs;
+    for(size_t ithres=0; ithres<nthres; ithres++){
+        dirs[ithres] = fout->mkdir(("thres_" + std::to_string(thresholds[ithres])).c_str());
+    }
+
+    // read root file
+    TFile* fin = TFile::Open(("./../data/feature/feature_" + rd_.run_number_ + ".root").c_str(), "READ");
+    TTree* tree = (TTree*)fin->Get("tree");
+
+    EvtFeature ef;
+
+    tree->SetBranchAddress("evt", &ef.evt);
+    tree->SetBranchAddress("board", &ef.board);
+    tree->SetBranchAddress("ch", &ef.ch);
+    tree->SetBranchAddress("pedestal", &ef.pedestal);
+    tree->SetBranchAddress("peak_adc", &ef.peak_adc);
+    tree->SetBranchAddress("peak_time", &ef.peak_time);
+    for(size_t ithres=0; ithres<nthres; ithres++){
+        tree->SetBranchAddress(("raise_time_th" + std::to_string(thresholds[ithres])).c_str(), &ef.raise_times[ithres]);
+        tree->SetBranchAddress(("fall_time_th" + std::to_string(thresholds[ithres])).c_str(), &ef.fall_times[ithres]);
+        tree->SetBranchAddress(("charge_th" + std::to_string(thresholds[ithres])).c_str(), &ef.charges[ithres]);
+        tree->SetBranchAddress(("tot_th" + std::to_string(thresholds[ithres])).c_str(), &ef.tots[ithres]);
+    }
+
+    Long64_t nentries = tree->GetEntries();
+
+    for(Long64_t entry=0; entry<nentries; entry++){
+        tree->GetEntry(entry);
+
+        if(ef.board != target_board) continue;
+
+        for(size_t ithres=0; ithres<nthres; ithres++){
+            dirs[ithres]->cd();
+            
+        }
+    }
 }
