@@ -17,7 +17,7 @@ void HitSelection::FeatureExtraction(){
     constexpr int thresholds[] = {30, 50, 70, 90};
     EvtFeature ef;
 
-    TFile* fout = new TFile(("./../data/feature/hit_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
+    TFile* fout = new TFile(("./../data/feature/feature_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
     TTree* tree = new TTree("tree", "Waveform Features");
 
     tree->Branch("evt", &ef.evt);
@@ -143,10 +143,10 @@ void HitSelection::FeatureExtraction(){
                     // +---------------------+
                     // | time over threshold |
                     // +---------------------+
-                    if(thres == 30) ef.tot_th30 = ef.fall_time_th30 - ef.raise_time_th30;
-                    if(thres == 50) ef.tot_th50 = ef.fall_time_th50 - ef.raise_time_th50;
-                    if(thres == 70) ef.tot_th70 = ef.fall_time_th70 - ef.raise_time_th70;
-                    if(thres == 90) ef.tot_th90 = ef.fall_time_th90 - ef.raise_time_th90;
+                    if(ef.raise_time_th30 >= 0 && ef.fall_time_th30 >= 0) ef.tot_th30 = ef.fall_time_th30 - ef.raise_time_th30;
+                    if(ef.raise_time_th50 >= 0 && ef.fall_time_th50 >= 0) ef.tot_th50 = ef.fall_time_th50 - ef.raise_time_th50;
+                    if(ef.raise_time_th70 >= 0 && ef.fall_time_th70 >= 0) ef.tot_th70 = ef.fall_time_th70 - ef.raise_time_th70;
+                    if(ef.raise_time_th90 >= 0 && ef.fall_time_th90 >= 0) ef.tot_th90 = ef.fall_time_th90 - ef.raise_time_th90;
 
                     // +--------+
                     // | charge |
