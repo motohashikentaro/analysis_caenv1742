@@ -4,8 +4,6 @@ CXXFLAGS =
 
 SRC = \
 	src/rootfile_analyzer.cpp \
-	src/analysis_process.cpp \
-	src/save_objects.cpp \
 	src/hit_selection.cpp
 
 BIN_DIR = bin
@@ -16,19 +14,11 @@ DIRS = $(BIN_DIR) $(BUILD_DIR) $(RESULT_DIR)
 
 OBJ = \
 	  $(BUILD_DIR)/rootfile_analyzer.o \
-	  $(BUILD_DIR)/analysis_process.o \
-	  $(BUILD_DIR)/save_objects.o \
 	  $(BUILD_DIR)/hit_selection.o
 
 APPS = \
-	   multiplicity \
-	   hitmap \
-	   avg_waveform \
-	   min_adc_distro \
-	   simple_waveform \
-	   separate_waveform \
-	   single_waveform \
-	   hit_selection 
+	   feature_extraction \
+	   feature_summary
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 

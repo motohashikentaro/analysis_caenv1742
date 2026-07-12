@@ -1,6 +1,6 @@
 #include "./../include/hit_selection.h"
 #include "./../include/rootfile_analyzer.h"
-#include "./../include/analysis_process.h"
+// #include "./../include/analysis_process.h"
 
 #include <iostream>
 #include <filesystem>
@@ -70,6 +70,7 @@ void HitSelection::FeatureExtraction(){
                 }
 
                 // calculate feature that depends on threshold
+                // use threshold <thresholds> in hit_selection.h
                 ef.raise_times.fill(-1.0);
                 ef.fall_times.fill(-1.0);
                 ef.charges.fill(0.0);

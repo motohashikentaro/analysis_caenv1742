@@ -30,7 +30,7 @@ class RootfileAnalyzer{
 
         RootData& GetRootData(){return rd_;}  // Accessor to RootData
 
-        void EventLoop();
+        // void EventLoop();
     private:
         RootData rd_;
 };

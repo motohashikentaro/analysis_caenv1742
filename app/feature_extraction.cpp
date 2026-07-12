@@ -1,3 +1,8 @@
+#include "./../include/rootfile_analyzer.h"
+// #include "./../include/analysis_process.h"
+#include "./../include/channel_map.h"
+#include "./../include/hit_selection.h"
+
 #include <iostream>
 #include <filesystem>
 
@@ -5,11 +10,6 @@
 #include <TTree.h>
 #include <TGraph.h>
 #include <TCanvas.h>
-
-#include "./../include/rootfile_analyzer.h"
-#include "./../include/analysis_process.h"
-#include "./../include/channel_map.h"
-#include "./../include/hit_selection.h"
 
 int main(int argc, char* argv[]){
 
