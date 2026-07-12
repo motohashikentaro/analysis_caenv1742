@@ -4,7 +4,8 @@ CXXFLAGS =
 
 SRC = \
 	src/rootfile_analyzer.cpp \
-	src/hit_selection.cpp
+	src/hit_selection.cpp \
+	src/feature_analyzer.cpp
 
 BIN_DIR = bin
 BUILD_DIR = build
@@ -14,7 +15,8 @@ DIRS = $(BIN_DIR) $(BUILD_DIR) $(RESULT_DIR)
 
 OBJ = \
 	  $(BUILD_DIR)/rootfile_analyzer.o \
-	  $(BUILD_DIR)/hit_selection.o
+	  $(BUILD_DIR)/hit_selection.o \
+	  $(BUILD_DIR)/feature_analyzer.o
 
 APPS = \
 	   feature_extraction \

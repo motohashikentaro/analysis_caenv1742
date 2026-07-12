@@ -61,7 +61,7 @@ void HitSelection::FeatureExtraction(){
                 // +------------+
                 ef.peak_time=-1;
                 ef.peak_adc=std::numeric_limits<double>::max();
-                for(int sample=0; sample<rd_.nsample; sample++){
+                for(int sample=kskipsample; sample<rd_.nsample; sample++){
                     double adc = rd_.ev_.amp[board][ch][sample] - ef.pedestal;
                     if(adc < ef.peak_adc){
                         ef.peak_adc=adc;

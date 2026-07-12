@@ -1,6 +1,8 @@
 #ifndef ROOTFILE_ANALYZER_H
 #define ROOTFILE_ANALYZER_H
 
+#include <string>
+
 #include <TFile.h>
 #include <TTree.h>
 
@@ -29,8 +31,6 @@ class RootfileAnalyzer{
         ~RootfileAnalyzer();  // Destructor
 
         RootData& GetRootData(){return rd_;}  // Accessor to RootData
-
-        // void EventLoop();
     private:
         RootData rd_;
 };

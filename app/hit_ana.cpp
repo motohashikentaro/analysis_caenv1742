@@ -26,7 +26,7 @@ int main(){
     t->Draw("peak_sample>>h_peak_sample(50, 0, 1024)", "board==1 && ch==24 && peak_sample >  100 && peak_sample < 250");
 
     c1->cd(5);
-    t->Draw("charge:-peak_adc>>h_cp(100, 0, 2000, 100, 0, 10000)", "board==1 && ch==24 && peak_sample >  100 && peak_sample < 250", "colz");
+    t->Draw("charge:-peak_adc>>h_cp(100, 0, 2000, 100, 0, 10000)", "board==1 && ch==24", "colz");
 
     c1->cd(6);
     t->Draw("charge:true_tot", "board==1 && ch==24 && peak_sample >  100 && peak_sample < 250", "colz");

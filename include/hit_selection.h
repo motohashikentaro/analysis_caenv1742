@@ -5,8 +5,16 @@
 
 #include <array>
 
+#include <TColor.h>
+
 inline constexpr std::array<int, 4> thresholds = {30, 50, 70, 90};
 inline constexpr size_t nthres = thresholds.size();
+inline const std::array<int, nthres> thres_colors = {
+    TColor::GetColor("#D6F4FF"),
+    TColor::GetColor("#95D2E8"),
+    TColor::GetColor("#1F6782"),
+    TColor::GetColor("#23434F")
+};
 
 struct EvtFeature{
     double evt;
