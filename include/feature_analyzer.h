@@ -9,6 +9,7 @@
 #include <TTree.h>
 #include <TH1D.h>
 #include <TH2D.h>
+#include <TLatex.h>
 
 struct FeatureData{
     EvtFeature ef_;
@@ -27,10 +28,25 @@ class FeatureAnalyzer{
 
         FeatureData& GetFeatureData(){return fd_;}
 
-        TH1D* PeakDistro();
-        std::array<TH1D*, nthres> ChargeDistro();
-        TH1D* PeaktimeDistro();
-        std::array<TH2D*, nthres> PeakVsCharge();
+        // TH1D* PeakDistro();
+        // std::array<TH1D*, nthres> ChargeDistro();
+        // TH1D* PeaktimeDistro();
+        // std::array<TH2D*, nthres> PeakVsCharge();
+        // TH1D* TotDistro();
+
+        TH1D* PeakDistro(int ch);
+        TH1D* ChargeDistro(int ch);
+        TH1D* PeaktimeDistro(int ch);
+        TH2D* PeakVsCharge(int ch);
+        TH1D* TotDistro(int ch);
+
+        void DrawHistInfo(TH1* hist,
+                  int board,
+                  int ch,
+                  int threshold = 30,
+                  double x = 0.58,
+                  double y = 0.88);
+
     private:
         FeatureData fd_;
 };

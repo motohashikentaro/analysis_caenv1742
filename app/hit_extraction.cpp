@@ -14,7 +14,7 @@ int main(int argc, char* argv[]){
 
     RootfileAnalyzer rfa(argv[1]);
     HitSelection hs(rfa.GetRootData());
-    hs.FeatureExtraction(); 
+    hs.HitExtraction(); 
     
     return 0;
 }

@@ -1,6 +1,5 @@
 #include "./../include/hit_selection.h"
 #include "./../include/rootfile_analyzer.h"
-// #include "./../include/analysis_process.h"
 
 #include <iostream>
 #include <filesystem>
@@ -161,18 +160,30 @@ void HitSelection::HitExtraction(){
     constexpr int target_board = 1;
     constexpr int thresholds[] = {30, 50, 70, 90};
 
+    EvtFeature ef;
+
     // create root file
     TFile* fout = new TFile(("./../data/hit/hit_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
-    std::array<TDirectory*, nthres> dirs;
+    std::array<TTree*, nthres> trees;
     for(size_t ithres=0; ithres<nthres; ithres++){
-        dirs[ithres] = fout->mkdir(("thres_" + std::to_string(thresholds[ithres])).c_str());
+        trees[ithres] = new TTree(("tree_th" + std::to_string(thresholds[ithres])).c_str(),
+                                  ("Hit tree threshold " + std::to_string(thresholds[ithres])).c_str());
+
+        trees[ithres]->Branch("evt", &ef.evt);
+        trees[ithres]->Branch("board", &ef.board);
+        trees[ithres]->Branch("ch", &ef.ch);
+        trees[ithres]->Branch("pedestal", &ef.pedestal);
+        trees[ithres]->Branch("peak_adc", &ef.peak_adc);
+        trees[ithres]->Branch("peak_time", &ef.peak_time);
+        trees[ithres]->Branch("raise_time", &ef.raise_times[ithres]);
+        trees[ithres]->Branch("fall_time", &ef.fall_times[ithres]);
+        trees[ithres]->Branch("tot", &ef.tots[ithres]);
+        trees[ithres]->Branch("charge", &ef.charges[ithres]);
     }
 
     // read root file
     TFile* fin = TFile::Open(("./../data/feature/feature_" + rd_.run_number_ + ".root").c_str(), "READ");
     TTree* tree = (TTree*)fin->Get("tree");
-
-    EvtFeature ef;
 
     tree->SetBranchAddress("evt", &ef.evt);
     tree->SetBranchAddress("board", &ef.board);
@@ -195,8 +206,21 @@ void HitSelection::HitExtraction(){
         if(ef.board != target_board) continue;
 
         for(size_t ithres=0; ithres<nthres; ithres++){
-            dirs[ithres]->cd();
-            
-        }
+            if(ef.peak_adc > -thresholds[ithres]) continue;
+            if(ef.peak_time < 150 || ef.peak_time > 250) continue;
+            if(ef.tots[ithres]<=2.5) continue;
+
+            trees[ithres]->Fill();
+        }  // end of thres loop
+    }  // end of evt loop
+
+    fout->cd();
+
+    for(auto* tree : trees){
+        tree->Write();
     }
-}
+
+    fout->Close();
+
+    delete fout;
+}  
