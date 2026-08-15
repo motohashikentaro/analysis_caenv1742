@@ -1,164 +1,77 @@
-// #include "./../include/rootfile_analyzer.h"
-// #include "./../include/hit_analyzer.h"
-
-// #include <TCanvas.h>
-// #include <TH1D.h>
-// #include <TH2D.h>
-
-// #include <array>
-// #include <string>
-
-// int main(int argc, char* argv[]){
-
-//     HitAnalyzer ha(argv[1]);
-
-//     TH1D* hist_peak;
-//     std::array<TH1D*, nthres> hist_charge;
-//     TH1D* hist_peaktime;
-//     std::array<TH2D*, nthres> hist_peak_vs_charge;
-//     TH1D* hist5;
-
-//     hist_peak = ha.PeakDistro();
-//     hist_charge = ha.ChargeDistro();
-//     hist_peaktime = ha.PeaktimeDistro();
-//     hist_peak_vs_charge = ha.PeakVsCharge();
-//     hist5 = ha.TotDistro();
-
-//     //==================================================
-//     // 1D Histograms
-//     //==================================================
-
-//     TCanvas* canvas = new TCanvas("canvas", "Hit Summary", 2400, 600);
-//     canvas->Divide(4, 1);
-
-//     canvas->cd(1);
-//     hist_peak->Draw("HIST");
-
-//     canvas->cd(2);
-//     for(size_t ithres=0; ithres<nthres; ithres++){
-//         if(ithres == 0){
-//             hist_charge[ithres]->Draw("HIST");
-//         }else{
-//             hist_charge[ithres]->Draw("HIST SAME");
-//         }
-//     }
-
-//     canvas->cd(3);
-//     hist_peaktime->Draw("HIST");
-
-//     canvas->cd(4);
-//     hist5->Draw("HIST");
-
-//     canvas->Update();
-//     canvas->SaveAs(
-//         ("./../result/" + ha.GetHitData().filename_ + "_hit_summary.png").c_str()
-//     );
-
-//     //==================================================
-//     // 2D Histograms
-//     //==================================================
-
-//     TCanvas* canvas2d = new TCanvas("canvas2d", "Peak vs Charge", 1200, 1200);
-//     canvas2d->Divide(2, 2);
-
-//     for(size_t ithres=0; ithres<nthres; ithres++){
-//         canvas2d->cd(ithres + 1);
-//         hist_peak_vs_charge[ithres]->Draw("COLZ");
-//     }
-
-//     canvas2d->Update();
-//     canvas2d->SaveAs(
-//         ("./../result/" + ha.GetHitData().filename_ + "_peak_vs_charge.png").c_str()
-//     );
-
-//     return 0;
-// }
-
-#include "./../include/rootfile_analyzer.h"
 #include "./../include/hit_analyzer.h"
+#include "./../include/hit_reader.h"
+
+#include <iostream>
 
 #include <TCanvas.h>
 #include <TH1D.h>
 #include <TH2D.h>
+#include <TLatex.h>
+#include <TStyle.h>
 
-#include <string>
+int main(int argc, char* argv[]){
+    if(argc != 4){
+        std::cerr << "Usage: " << argv[0] << " <input_root_file> <board> <ch>" << std::endl;
+        return 1;
+    }
+    HitReader hr(argv[1]);
+    HitAnalyzer ha(hr.GetHitData());
 
+    int board = std::stoi(argv[2]);
+    int ch = std::stoi(argv[3]);
 
-int main(int argc, char* argv[])
-{
-    HitAnalyzer ha(argv[1]);
+    TH1D* hist1 = ha.PeakDistro(board, ch);
+    TH1D* hist2 = ha.PeaktimeDistro(board, ch);
+    TH1D* hist3 = ha.ChargeDistro(board, ch); // Assuming target_threshold is not needed for this example
+    TH2D* hist4 = ha.PeakVsCharge(board, ch); // Assuming target_threshold is not needed for this example
+    TH1D* hist5 = ha.TotDistro(board, ch); // Assuming target_threshold is not needed for this example
+    TH2D* hist6 = ha.PeakVsTot(board, ch); // Assuming target_threshold is not needed for this example
 
-    int ch = std::stoi(argv[2]);
-
-
-    TH1D* hist_peak = ha.PeakDistro(ch);
-    TH1D* hist_charge = ha.ChargeDistro(ch);
-    TH1D* hist_peaktime = ha.PeaktimeDistro(ch);
-    TH2D* hist_peak_vs_charge = ha.PeakVsCharge(ch);
-    TH1D* hist_tot = ha.TotDistro(ch);
-
-
-    //==================================================
-    // 1D Histograms
-    //==================================================
-
-    TCanvas* canvas =
-        new TCanvas("canvas", "Hit Summary", 2400, 600);
-
+    // 1D histogram
+    TCanvas* canvas = new TCanvas("canvas", "Hit Summary", 2400, 600);
     canvas->Divide(4, 1);
 
+    TLatex* latex = new TLatex();
+    latex->SetNDC();
+    latex->SetTextSize(0.04);
 
     canvas->cd(1);
-    hist_peak->Draw("HIST");
-    ha.DrawHistInfo(hist_peak, ch, 0.15, 0.85);
-
-
+    hist1->Draw("HIST");
+    latex->DrawLatex(0.70, 0.85, Form("Run %s", (hr.GetHitData()).run_number_condition_.c_str()));
+    latex->DrawLatex(0.70, 0.80, Form("Board %d, Ch %d", board, ch));
+    
     canvas->cd(2);
-    hist_charge->Draw("HIST");
-    ha.DrawHistInfo(hist_charge, ch, 0.55, 0.85);
-
+    hist2->Draw("HIST");
+    latex->DrawLatex(0.70, 0.85, Form("Run %s", (hr.GetHitData()).run_number_condition_.c_str()));
+    latex->DrawLatex(0.70, 0.80, Form("Board %d, Ch %d", board, ch));
 
     canvas->cd(3);
-    hist_peaktime->Draw("HIST");
-    ha.DrawHistInfo(hist_peaktime, ch, 0.55, 0.85);
-
+    hist3->Draw("HIST");
+    latex->DrawLatex(0.70, 0.85, Form("Run %s", (hr.GetHitData()).run_number_condition_.c_str()));
+    latex->DrawLatex(0.70, 0.80, Form("Board %d, Ch %d", board, ch));
 
     canvas->cd(4);
-    hist_tot->Draw("HIST");
-    ha.DrawHistInfo(hist_tot, ch, 0.55, 0.85);
-
+    hist5->Draw("HIST");
+    latex->DrawLatex(0.70, 0.85, Form("Run %s", (hr.GetHitData()).run_number_condition_.c_str()));
+    latex->DrawLatex(0.70, 0.80, Form("Board %d, Ch %d", board, ch));
 
     canvas->Update();
+    canvas->SaveAs(("./../result/run_" + (hr.GetHitData()).run_number_condition_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_hit_summary.png").c_str());
 
-    canvas->SaveAs(
-        ("./../result/" 
-        + ha.GetHitData().filename_
-        + "_hit_summary.png").c_str()
-    );
+    // 2D histogram
+    TCanvas* canvas2d = new TCanvas("canvas2d", "Hit Summary 2D", 1200, 600);
+    canvas2d->Divide(2, 1);
 
-
-    //==================================================
-    // 2D Histogram
-    //==================================================
-
-    TCanvas* canvas2d =
-        new TCanvas("canvas2d",
-                    "Peak vs Charge",
-                    800,
-                    800);
-
-
-    hist_peak_vs_charge->Draw("COLZ");
-
+    canvas2d->cd(1);
+    hist4->GetYaxis()->SetRangeUser(0, 1000);
+    hist4->Draw("COLZ");
+    
+    canvas2d->cd(2);
+    hist6->GetYaxis()->SetRangeUser(0, 14);
+    hist6->Draw("COLZ");
 
     canvas2d->Update();
-
-    canvas2d->SaveAs(
-        ("./../result/"
-        + ha.GetHitData().filename_
-        + "_peak_vs_charge.png").c_str()
-    );
-
+    canvas2d->SaveAs(("./../result/run_" + (hr.GetHitData()).run_number_condition_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_hit_summary_2d.png").c_str());
 
     return 0;
 }

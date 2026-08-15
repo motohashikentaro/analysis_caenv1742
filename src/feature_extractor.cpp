@@ -1,23 +1,25 @@
-#include "./../include/hit_selection.h"
-#include "./../include/rootfile_analyzer.h"
+#include "./../include/feature_extractor.h"
+#include "./../include/rootfile_reader.h"
 
 #include <iostream>
 #include <filesystem>
 #include <algorithm>
 #include <limits>
 #include <cmath>
+#include <array>
+#include <vector>
 
 #include <TFile.h>
 #include <TTree.h>
 
-void HitSelection::FeatureExtraction(){
+void FeatureExtractor::FeatureExtraction(){
     constexpr int kskipsample=10;
     constexpr int kpedestalcalc=50;
     EvtFeature ef;
 
     TFile* fout = new TFile(("./../data/feature/feature_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
     TTree* tree = new TTree("tree", "Waveform Features");
-
+    
     tree->Branch("evt", &ef.evt);
     
     tree->Branch("board", &ef.board);
@@ -27,12 +29,12 @@ void HitSelection::FeatureExtraction(){
 
     tree->Branch("peak_adc", &ef.peak_adc);
     tree->Branch("peak_time", &ef.peak_time);
-
-    for(size_t ithres=0; ithres<nthres; ithres++){
-        tree->Branch(("raise_time_th" + std::to_string(thresholds[ithres])).c_str(), &ef.raise_times[ithres]);
-        tree->Branch(("fall_time_th" + std::to_string(thresholds[ithres])).c_str(), &ef.fall_times[ithres]);
-        tree->Branch(("charge_th" + std::to_string(thresholds[ithres])).c_str(), &ef.charges[ithres]);
-        tree->Branch(("tot_th" + std::to_string(thresholds[ithres])).c_str(), &ef.tots[ithres]);
+    
+    for(size_t ithres=0; ithres<ThresholdData::nthres; ithres++){
+        tree->Branch(("raise_time_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.raise_times[ithres]);
+        tree->Branch(("fall_time_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.fall_times[ithres]);
+        tree->Branch(("charge_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.charges[ithres]);
+        tree->Branch(("tot_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.tots[ithres]);
     }
 
     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
@@ -69,14 +71,14 @@ void HitSelection::FeatureExtraction(){
                 }
 
                 // calculate feature that depends on threshold
-                // use threshold <thresholds> in hit_selection.h
+                // use threshold <thresholds> in feature_extractor.h
                 ef.raise_times.fill(-1.0);
                 ef.fall_times.fill(-1.0);
                 ef.charges.fill(0.0);
                 ef.tots.fill(0.0);
 
-                for(size_t ithres=0; ithres<nthres; ithres++){
-                    int thres = thresholds[ithres];
+                for(size_t ithres=0; ithres<ThresholdData::nthres; ithres++){
+                    int thres = ThresholdData::thresholds[ithres];
                     if(ef.peak_adc > -thres) continue;
 
                     // +------------+
@@ -155,72 +157,3 @@ void HitSelection::FeatureExtraction(){
 
     delete fout;
 }
-
-void HitSelection::HitExtraction(){
-    constexpr int target_board = 1;
-    constexpr int thresholds[] = {30, 50, 70, 90};
-
-    EvtFeature ef;
-
-    // create root file
-    TFile* fout = new TFile(("./../data/hit/hit_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
-    std::array<TTree*, nthres> trees;
-    for(size_t ithres=0; ithres<nthres; ithres++){
-        trees[ithres] = new TTree(("tree_th" + std::to_string(thresholds[ithres])).c_str(),
-                                  ("Hit tree threshold " + std::to_string(thresholds[ithres])).c_str());
-
-        trees[ithres]->Branch("evt", &ef.evt);
-        trees[ithres]->Branch("board", &ef.board);
-        trees[ithres]->Branch("ch", &ef.ch);
-        trees[ithres]->Branch("pedestal", &ef.pedestal);
-        trees[ithres]->Branch("peak_adc", &ef.peak_adc);
-        trees[ithres]->Branch("peak_time", &ef.peak_time);
-        trees[ithres]->Branch("raise_time", &ef.raise_times[ithres]);
-        trees[ithres]->Branch("fall_time", &ef.fall_times[ithres]);
-        trees[ithres]->Branch("tot", &ef.tots[ithres]);
-        trees[ithres]->Branch("charge", &ef.charges[ithres]);
-    }
-
-    // read root file
-    TFile* fin = TFile::Open(("./../data/feature/feature_" + rd_.run_number_ + ".root").c_str(), "READ");
-    TTree* tree = (TTree*)fin->Get("tree");
-
-    tree->SetBranchAddress("evt", &ef.evt);
-    tree->SetBranchAddress("board", &ef.board);
-    tree->SetBranchAddress("ch", &ef.ch);
-    tree->SetBranchAddress("pedestal", &ef.pedestal);
-    tree->SetBranchAddress("peak_adc", &ef.peak_adc);
-    tree->SetBranchAddress("peak_time", &ef.peak_time);
-    for(size_t ithres=0; ithres<nthres; ithres++){
-        tree->SetBranchAddress(("raise_time_th" + std::to_string(thresholds[ithres])).c_str(), &ef.raise_times[ithres]);
-        tree->SetBranchAddress(("fall_time_th" + std::to_string(thresholds[ithres])).c_str(), &ef.fall_times[ithres]);
-        tree->SetBranchAddress(("charge_th" + std::to_string(thresholds[ithres])).c_str(), &ef.charges[ithres]);
-        tree->SetBranchAddress(("tot_th" + std::to_string(thresholds[ithres])).c_str(), &ef.tots[ithres]);
-    }
-
-    Long64_t nentries = tree->GetEntries();
-
-    for(Long64_t entry=0; entry<nentries; entry++){
-        tree->GetEntry(entry);
-
-        if(ef.board != target_board) continue;
-
-        for(size_t ithres=0; ithres<nthres; ithres++){
-            if(ef.peak_adc > -thresholds[ithres]) continue;
-            if(ef.peak_time < 150 || ef.peak_time > 250) continue;
-            if(ef.tots[ithres]<=2.5) continue;
-
-            trees[ithres]->Fill();
-        }  // end of thres loop
-    }  // end of evt loop
-
-    fout->cd();
-
-    for(auto* tree : trees){
-        tree->Write();
-    }
-
-    fout->Close();
-
-    delete fout;
-}  

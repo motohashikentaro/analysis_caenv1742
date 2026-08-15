@@ -3,15 +3,15 @@ CXX = crg++
 CXXFLAGS = 
 
 SRC = \
+	src/rootfile_reader.cpp \
 	src/rootfile_analyzer.cpp \
-	src/hit_selection.cpp \
+	src/feature_extractor.cpp \
+	src/feature_reader.cpp \
 	src/feature_analyzer.cpp \
-	src/hit_analyzer.cpp \
-	src/analysis_process.cpp \
-	src/hit_correlation.cpp \
-	src/correla_ana.cpp \
-	src/correla_peak.cpp \
-	src/correla_multiplicity.cpp
+	src/hit_extractor.cpp \
+	src/selection_conditions.cpp \
+	src/hit_reader.cpp \
+	src/hit_analyzer.cpp
 
 BIN_DIR = bin
 BUILD_DIR = build
@@ -20,28 +20,24 @@ RESULT_DIR = result
 DIRS = $(BIN_DIR) $(BUILD_DIR) $(RESULT_DIR)
 
 OBJ = \
+	  $(BUILD_DIR)/rootfile_reader.o \
 	  $(BUILD_DIR)/rootfile_analyzer.o \
-	  $(BUILD_DIR)/hit_selection.o \
+	  $(BUILD_DIR)/feature_extractor.o \
+	  $(BUILD_DIR)/feature_reader.o \
 	  $(BUILD_DIR)/feature_analyzer.o \
-	  $(BUILD_DIR)/hit_analyzer.o \
-	  $(BUILD_DIR)/analysis_process.o \
-	  $(BUILD_DIR)/hit_correlation.o \
-	  $(BUILD_DIR)/correla_ana.o \
-	  $(BUILD_DIR)/correla_peak.o \
-	  $(BUILD_DIR)/correla_multiplicity.o
+	  $(BUILD_DIR)/hit_extractor.o \
+	  $(BUILD_DIR)/selection_conditions.o \
+	  $(BUILD_DIR)/hit_reader.o \
+	  $(BUILD_DIR)/hit_analyzer.o
 
 APPS = \
-	   feature_extraction \
-	   feature_summary \
-	   hit_extraction \
-	   hit_summary \
 	   waveform \
-	   feature_summary_bycanvas \
-	   make_corre_file \
-	   correla_ana \
-	   correla_peak \
-	   hit_summary_bycanvas \
-	   correla_multiplicity
+	   waveform_map \
+	   feature_extractor \
+	   feature_summary \
+	   feature_summary_per_canvas \
+	   hit_extractor \
+	   hit_summary
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 

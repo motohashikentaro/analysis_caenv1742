@@ -1,38 +1,18 @@
 #ifndef ROOTFILE_ANALYZER_H
 #define ROOTFILE_ANALYZER_H
 
-#include <string>
+#include "./rootfile_reader.h"
 
-#include <TFile.h>
-#include <TTree.h>
-
-struct event{
-    Long64_t ev_id;
-    float amp[2][32][1024];
-};
-
-struct RootData{
-    event ev_;
-    
-    int nboard = 2;  // digitizer board
-    int nch = 32;
-    int nsample = 1024;
-
-    TFile* file_;
-    std::string filename_;
-    std::string run_number_;
-    TTree* tree_;
-    Long64_t nentries_;
-};
+#include <TGraph.h>
 
 class RootfileAnalyzer{
     public:
-        RootfileAnalyzer(char* input_path);  // Constructor to initialize RootData from the input ROOT file
-        ~RootfileAnalyzer();  // Destructor
+        RootfileAnalyzer(RootData& rd): rd_(rd){};  // Constructor to initialize RootData reference
 
-        RootData& GetRootData(){return rd_;}  // Accessor to RootData
+        std::array<TGraph*, 1000> Waveform(int target_board, int target_ch, int range_start=0, int range_end=1024);  // Method to get waveforms for a specific board and channel
+
     private:
-        RootData rd_;
+        RootData& rd_;
 };
 
 #endif
