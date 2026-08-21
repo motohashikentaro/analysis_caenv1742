@@ -133,4 +133,14 @@ inline StripPosition Digi2StripPosition(int digi_ch){
     }
 }
 
+inline StripPosition Digi2CorrectStripPosition(int digi_ch){
+    if(digi_ch < 0 || digi_ch >= 32){
+        return StripPosition{-1, -1};
+    }
+
+    return StripPosition{digi_ch / 8, digi_ch % 8};
+}
+
+
+
 #endif

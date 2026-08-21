@@ -20,6 +20,9 @@ class FeatureAnalyzer{
         TH2D* PeakVsCharge(int board, int ch, int target_threshold);
         TH1D* TotDistro(int board, int ch, int target_threshold);
         TH2D* PeakVsTot(int board, int ch, int target_threshold);
+        TH1D* ChargePerPeakDistro(int board, int ch, int target_threshold);
+        TH1D* TotPerPeakDistro(int board, int ch, int target_threshold);
+        TH1D* ChargeMinusAlphaAdcDistro(int board, int ch, int target_threshold);
 
     private:
         FeatureData& fd_;
