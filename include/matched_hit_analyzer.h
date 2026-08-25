@@ -14,13 +14,27 @@ struct StripHit{
     double charge;
 };
 
+struct ReconstructedPixelPosition{
+    double x;
+    double y;
+};
+
+struct PixelHit{
+    PixelPosition position;
+    double charge;
+};
+
 struct ReconstructedHitPosition{
     double strip_position_front_x;
     double strip_position_front_y;
     double strip_position_back_x;
     double strip_position_back_y;
 
-    std::array<std::vector<PixelPosition>, 2> pixel_positions;
+    ReconstructedPixelPosition dut_position_front;
+    ReconstructedPixelPosition dut_position_back;
+
+    int n_hit_ch_front;
+    int n_hit_ch_back;
 };
 
 struct MatchedHitAnalyzer{
@@ -31,6 +45,10 @@ struct MatchedHitAnalyzer{
         bool Is6Through(const std::vector<EvtHit>& hits);
 
         double ChargeWeightStripPosition(const std::vector<StripHit>& hits);
+        ReconstructedPixelPosition ChargeWeightPixelPosition(const std::vector<PixelHit>& hits);
+
+        double CorrectStripPosition(double strip_position);
+        ReconstructedPixelPosition CorrectPixelPosition(const ReconstructedPixelPosition& pixel_position);
 
         std::optional<ReconstructedHitPosition> Reconstruct(const std::vector<EvtHit>& hits);
 

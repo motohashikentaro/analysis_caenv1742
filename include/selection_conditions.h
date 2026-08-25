@@ -18,11 +18,13 @@ class SelectionConditions{
         static std::optional<size_t> StrictTrackerCondition(const EvtFeature& ef);
         static std::optional<size_t> TotPerPeakTrackerCondition(const EvtFeature& ef);
         static std::optional<size_t> LinearFunctionTrackerCondition(const EvtFeature& ef);
+        static std::optional<size_t> CombinedFunctionTrackerCondition(const EvtFeature& ef);
 
         static std::optional<size_t> StandardDutCondition(const EvtFeature& ef);
         static std::optional<size_t> StrictDutCondition(const EvtFeature& ef);
         static std::optional<size_t> TotPerPeakDutCondition(const EvtFeature& ef);
         static std::optional<size_t> LinearFunctionDutCondition(const EvtFeature& ef);
+        static std::optional<size_t> CombinedFunctionDutCondition(const EvtFeature& ef);
 };  
 
 #endif

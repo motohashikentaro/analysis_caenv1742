@@ -71,14 +71,25 @@ int main(int argc, char* argv[]){
         if(i == 1){
             histograms2d[i]->GetXaxis()->SetRangeUser(0, 400);
             histograms2d[i]->GetYaxis()->SetRangeUser(0, 15);
+        }
+        histograms2d[i]->Draw("COLZ");
 
-            if(argc > 5 && std::string(argv[5]) == "line"){
+        if(i == 1){
+            if(argc > 5 && std::string(argv[5]) == "line_linear"){
                 TF1* cut_line2 = new TF1("cut_line2", "0.04*x", 0, 400);
                 cut_line2->SetLineWidth(2);
                 cut_line2->Draw("SAME");
             }
+            if(argc > 5 && std::string(argv[5]) == "line_combined"){
+                TF1* cut_line1 = new TF1("cut_line1", "0", 0, 30);
+                cut_line1->SetLineWidth(2);
+                cut_line1->Draw("SAME");
+                TF1* cut_line2 = new TF1("cut_line2", "0.04*x", 45, 100);
+                cut_line2->SetLineWidth(2);
+                cut_line2->Draw("SAME");
+            }
         }
-        histograms2d[i]->Draw("COLZ");
+        
         latex->DrawLatex(0.50, 0.30, Form("Run %s", (fr.GetFeatureData()).run_number_.c_str()));
         latex->DrawLatex(0.50, 0.27, Form("Board %d, Ch %d", board, ch));
         latex->DrawLatex(0.50, 0.24, Form("Threshold %d ADC", target_threshold));
@@ -89,7 +100,7 @@ int main(int argc, char* argv[]){
     canvas2d->SaveAs(("./../result/run_" + fr.GetFeatureData().run_number_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + "_feature_summary_2d.png").c_str());
 
     // etc per peak
-    auto* canvas_per_peak = PlotSupporter::MakeCanvas2D("canvas_per_peak", 2, 1);
+    auto* canvas_per_peak = PlotSupporter::MakeCanvas2D("canvas_per_peak", 3, 1);
     std::array<TH1*, 3> histograms_per_peak = {hist7, hist8, hist9};
     for(size_t i = 0; i < histograms_per_peak.size(); ++i){
         canvas_per_peak->cd(i + 1);

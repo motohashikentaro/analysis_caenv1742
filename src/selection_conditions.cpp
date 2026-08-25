@@ -43,6 +43,20 @@ std::optional<size_t> SelectionConditions::LinearFunctionTrackerCondition(const 
     return std::make_optional(static_cast<size_t>(threshold_idx));
 }
 
+std::optional<size_t> SelectionConditions::CombinedFunctionTrackerCondition(const EvtFeature& ef){
+    constexpr size_t threshold_idx = 0;  // use threshold 30 for tracker
+
+    if(ef.peak_time < 110 || ef.peak_time > 220) return std::nullopt;
+
+    if(ef.peak_adc > -ThresholdData::thresholds[threshold_idx]) return std::nullopt;
+    // if(-ThresholdData::thresholds[threshold_idx] >= ef.peak_adc && ef.peak_adc > -50) is through
+    if(ef.peak_adc <= -35 && ef.peak_adc > -100){
+        if(ef.tots[threshold_idx] < 0.04 * -ef.peak_adc) return std::nullopt;
+    }
+
+    return std::make_optional(static_cast<size_t>(threshold_idx));
+}
+
 // DUT selection conditions
 std::optional<size_t> SelectionConditions::StandardDutCondition(const EvtFeature& ef){
     constexpr size_t threshold_idx = 0;  // use threshold 30 for DUT
@@ -79,5 +93,19 @@ std::optional<size_t> SelectionConditions::LinearFunctionDutCondition(const EvtF
     
     if(ef.tots[threshold_idx] < 0.04 * -ef.peak_adc) return std::nullopt;
     
+    return std::make_optional(static_cast<size_t>(threshold_idx));
+}
+
+std::optional<size_t> SelectionConditions::CombinedFunctionDutCondition(const EvtFeature& ef){
+    constexpr size_t threshold_idx = 0;  // use threshold 30 for DUT
+
+    if(ef.peak_time < 110 || ef.peak_time > 220) return std::nullopt;
+
+    if(ef.peak_adc > -ThresholdData::thresholds[threshold_idx]) return std::nullopt;
+    // if(-ThresholdData::thresholds[threshold_idx] >= ef.peak_adc && ef.peak_adc > -50) is through
+    if(ef.peak_adc <= -35 && ef.peak_adc > -100){
+        if(ef.tots[threshold_idx] < 0.04 * -ef.peak_adc) return std::nullopt;
+    }
+
     return std::make_optional(static_cast<size_t>(threshold_idx));
 }

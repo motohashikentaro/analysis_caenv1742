@@ -9,7 +9,7 @@
 #include <RtypesCore.h>
 
 struct ThresholdData{
-    static constexpr std::array thresholds{30, 40, 70};
+    static constexpr std::array thresholds{30, 40, 70, 20};
     static constexpr size_t nthres = thresholds.size();
 };
 
@@ -35,6 +35,7 @@ class FeatureExtractor{
         FeatureExtractor(RootData& rd): rd_(rd){};
 
         void FeatureExtraction();
+        void FeatcorExtraction();
 
     private:
         RootData& rd_;

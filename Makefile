@@ -14,7 +14,8 @@ SRC = \
 	src/hit_reader.cpp \
 	src/hit_analyzer.cpp \
 	src/matched_hit_analyzer.cpp \
-	src/correlation_analyzer.cpp 
+	src/correlation_analyzer.cpp \
+	src/tracker.cpp 
 
 BIN_DIR = bin
 BUILD_DIR = build
@@ -34,12 +35,14 @@ OBJ = \
 	  $(BUILD_DIR)/hit_reader.o \
 	  $(BUILD_DIR)/hit_analyzer.o \
 	  $(BUILD_DIR)/matched_hit_analyzer.o \
-	  $(BUILD_DIR)/correlation_analyzer.o
+	  $(BUILD_DIR)/correlation_analyzer.o \
+	  $(BUILD_DIR)/tracker.o 
 
 APPS = \
+	   hit_merger \
+	   feature_merger \
 	   waveform \
 	   waveform_map \
-	   rootfile_merger \
 	   feature_extractor \
 	   feature_summary \
 	   feature_summary_per_canvas \
@@ -47,7 +50,12 @@ APPS = \
 	   hit_extractor2 \
 	   hit_extractor3 \
 	   hit_summary \
-	   correlation_summary
+	   correlation_summary \
+	   hit_checker \
+	   rootfile_checker \
+	   hit_event_extractor \
+	   hit_event_checker 
+
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 

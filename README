@@ -1,0 +1,25 @@
+**flow
+dat file
+↓→dat2root
+↓
+root file
+↓→rootfile_reader
+↓→rootfile_analyzer, waveform, waveform_map
+↓→feature_extractor
+feature file
+↓→feature_reader
+↓→feature_analyzer, feature_summary
+↓→hit_extractor
+hit file
+↓→hit_reader
+↓→hit_analyzer, hit_summary
+↓→matched_hit_analyzer
+↓→correlation_analyzer correlation_summary
+
+
+
+
+**support
+channel_map: channel map & digitizer ch → sensor ch
+selection_conditions: hit selection condition
+plot_supporter: plot support
