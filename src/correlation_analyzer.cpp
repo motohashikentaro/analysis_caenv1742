@@ -59,7 +59,7 @@ TH2D* CorrelationAnalyzer::BackStripHitmap(){
 }
 
 TH2D* CorrelationAnalyzer::FrontDutHitmap(){
-    TH2D* hist = new TH2D(Form("front_dut_hitmap_%p", this), ";Front DUT X[mm];Front DUT Y[mm]", 16, -1, 1, 16, -1, 1);
+    TH2D* hist = new TH2D(Form("front_dut_hitmap_%p", this), ";Front DUT X[mm];Front DUT Y[mm]", 16, 0, 2, 16, 0, 2);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -71,7 +71,7 @@ TH2D* CorrelationAnalyzer::FrontDutHitmap(){
 }
 
 TH2D* CorrelationAnalyzer::BackDutHitmap(){
-    TH2D* hist = new TH2D(Form("back_dut_hitmap_%p", this), ";Back DUT X[mm];Back DUT Y[mm]", 16, -1, 1, 16, -1, 1);
+    TH2D* hist = new TH2D(Form("back_dut_hitmap_%p", this), ";Back DUT X[mm];Back DUT Y[mm]", 16, 0, 2, 16, 0, 2);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -83,7 +83,7 @@ TH2D* CorrelationAnalyzer::BackDutHitmap(){
 }
 
 TH2D* CorrelationAnalyzer::FrontExtrapolatedTrackHitmap(){
-    TH2D* hist = new TH2D(Form("front_extrapolated_track_hitmap_%p", this), ";Extrapolated DUT Position Front X [mm];Extrapolated DUT Position Front Y [mm]", 16, -1, 1, 16, -1, 1);
+    TH2D* hist = new TH2D(Form("front_extrapolated_track_hitmap_%p", this), ";Extrapolated DUT Position Front X [mm];Extrapolated DUT Position Front Y [mm]", 16, -2, 2, 16, -2, 2);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -100,7 +100,7 @@ TH2D* CorrelationAnalyzer::FrontExtrapolatedTrackHitmap(){
 }
 
 TH2D* CorrelationAnalyzer::BackExtrapolatedTrackHitmap(){
-    TH2D* hist = new TH2D(Form("back_extrapolated_track_hitmap_%p", this), ";Extrapolated DUT Position Back X [mm];Extrapolated DUT Position Back Y [mm]", 16, -1, 1, 16, -1, 1);
+    TH2D* hist = new TH2D(Form("back_extrapolated_track_hitmap_%p", this), ";Extrapolated DUT Position Back X [mm];Extrapolated DUT Position Back Y [mm]", 16, -2, 2, 16, -2, 2);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -117,7 +117,7 @@ TH2D* CorrelationAnalyzer::BackExtrapolatedTrackHitmap(){
 }
 
 TH2D* CorrelationAnalyzer::FrontStripFrontDutXCorrelation(int cut_n_hit_ch_front){
-    TH2D* hist = new TH2D(Form("front_strip_front_dut_x_corr_%p", this), ";Front Strip X[mm];Front DUT X[mm]", 32, -2, 2, 32, -2, 2);
+    TH2D* hist = new TH2D(Form("front_strip_front_dut_x_corr_%p", this), ";Front Strip X[mm];Front DUT X[mm]", 32, -2, 2, 32, 0, 4);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -131,7 +131,7 @@ TH2D* CorrelationAnalyzer::FrontStripFrontDutXCorrelation(int cut_n_hit_ch_front
 }
 
 TH2D* CorrelationAnalyzer::BackStripBackDutXCorrelation(int cut_n_hit_ch_back){
-    TH2D* hist = new TH2D(Form("back_strip_back_dut_x_corr_%p", this), ";Back Strip X[mm];Back DUT X[mm]", 32, -2, 2, 32, -2, 2);
+    TH2D* hist = new TH2D(Form("back_strip_back_dut_x_corr_%p", this), ";Back Strip X[mm];Back DUT X[mm]", 32, -2, 2, 32, 0, 4);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -145,7 +145,7 @@ TH2D* CorrelationAnalyzer::BackStripBackDutXCorrelation(int cut_n_hit_ch_back){
 }
 
 TH2D* CorrelationAnalyzer::FrontStripBackDutXCorrelation(int cut_n_hit_ch_back){
-    TH2D* hist = new TH2D(Form("front_strip_back_dut_x_corr_%p", this), ";Front Strip X[mm];Back DUT X[mm]", 32, -2, 2, 32, -2, 2);
+    TH2D* hist = new TH2D(Form("front_strip_back_dut_x_corr_%p", this), ";Front Strip X[mm];Back DUT X[mm]", 32, -2, 2, 32, 0, 4);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -159,7 +159,7 @@ TH2D* CorrelationAnalyzer::FrontStripBackDutXCorrelation(int cut_n_hit_ch_back){
 }
 
 TH2D* CorrelationAnalyzer::BackStripFrontDutXCorrelation(int cut_n_hit_ch_front){
-    TH2D* hist = new TH2D(Form("back_strip_front_dut_x_corr_%p", this), ";Back Strip X[mm];Front DUT X[mm]", 32, -2, 2, 32, -2, 2);
+    TH2D* hist = new TH2D(Form("back_strip_front_dut_x_corr_%p", this), ";Back Strip X[mm];Front DUT X[mm]", 32, -2, 2, 32, 0, 4);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -173,7 +173,7 @@ TH2D* CorrelationAnalyzer::BackStripFrontDutXCorrelation(int cut_n_hit_ch_front)
 }
 
 TH2D* CorrelationAnalyzer::FrontStripFrontDutYCorrelation(int cut_n_hit_ch_front){
-    TH2D* hist = new TH2D(Form("front_strip_front_dut_y_corr_%p", this), ";Front Strip Y[mm];Front DUT Y[mm]", 32, -2, 2, 32, -2, 2);
+    TH2D* hist = new TH2D(Form("front_strip_front_dut_y_corr_%p", this), ";Front Strip Y[mm];Front DUT Y[mm]", 32, -2, 2, 32, 0, 4);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -187,7 +187,7 @@ TH2D* CorrelationAnalyzer::FrontStripFrontDutYCorrelation(int cut_n_hit_ch_front
 }
 
 TH2D* CorrelationAnalyzer::BackStripBackDutYCorrelation(int cut_n_hit_ch_back){
-    TH2D* hist = new TH2D(Form("back_strip_back_dut_y_corr_%p", this), ";Back Strip Y[mm];Back DUT Y[mm]", 32, -2, 2, 32, -2, 2);
+    TH2D* hist = new TH2D(Form("back_strip_back_dut_y_corr_%p", this), ";Back Strip Y[mm];Back DUT Y[mm]", 32, -2, 2, 32, 0, 4);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -201,7 +201,7 @@ TH2D* CorrelationAnalyzer::BackStripBackDutYCorrelation(int cut_n_hit_ch_back){
 }
 
 TH2D* CorrelationAnalyzer::FrontStripBackDutYCorrelation(int cut_n_hit_ch_back){
-    TH2D* hist = new TH2D(Form("front_strip_back_dut_y_corr_%p", this), ";Front Strip Y[mm];Back DUT Y[mm]", 32, -2, 2, 32, -2, 2);
+    TH2D* hist = new TH2D(Form("front_strip_back_dut_y_corr_%p", this), ";Front Strip Y[mm];Back DUT Y[mm]", 32, -2, 2, 32, 0, 4);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -215,7 +215,7 @@ TH2D* CorrelationAnalyzer::FrontStripBackDutYCorrelation(int cut_n_hit_ch_back){
 }
 
 TH2D* CorrelationAnalyzer::BackStripFrontDutYCorrelation(int cut_n_hit_ch_front){
-    TH2D* hist = new TH2D(Form("back_strip_front_dut_y_corr_%p", this), ";Back Strip Y[mm];Front DUT Y[mm]", 32, -2, 2, 32, -2, 2);
+    TH2D* hist = new TH2D(Form("back_strip_front_dut_y_corr_%p", this), ";Back Strip Y[mm];Front DUT Y[mm]", 32, -2, 2, 32, 0, 4);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -229,7 +229,7 @@ TH2D* CorrelationAnalyzer::BackStripFrontDutYCorrelation(int cut_n_hit_ch_front)
 }
 
 TH2D* CorrelationAnalyzer::FrontExtrapolatedTrackDutPositionXCorrelation(int cut_n_hit_ch_front){
-    TH2D* hist = new TH2D(Form("front_extrapolated_track_dut_position_x_corr_%p", this), ";Reconstructed DUT Position Front X [mm];Extrapolated DUT Position FrontX[mm]", 16, -1, 1, 16, -1, 1);
+    TH2D* hist = new TH2D(Form("front_extrapolated_track_dut_position_x_corr_%p", this), ";Reconstructed DUT Position Front X [mm];Extrapolated DUT Position FrontX[mm]", 16, -2, 2, 16, -2, 2);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -247,7 +247,7 @@ TH2D* CorrelationAnalyzer::FrontExtrapolatedTrackDutPositionXCorrelation(int cut
 }
 
 TH2D* CorrelationAnalyzer::FrontExtrapolatedTrackDutPositionYCorrelation(int cut_n_hit_ch_front){
-    TH2D* hist = new TH2D(Form("front_extrapolated_track_dut_position_y_corr_%p", this), ";Reconstructed DUT Position Front Y [mm];Extrapolated DUT Position Front Y[mm]", 16, -1, 1, 16, -1, 1);
+    TH2D* hist = new TH2D(Form("front_extrapolated_track_dut_position_y_corr_%p", this), ";Reconstructed DUT Position Front Y [mm];Extrapolated DUT Position Front Y[mm]", 16, -2, 2, 16, -2, 2);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -265,7 +265,7 @@ TH2D* CorrelationAnalyzer::FrontExtrapolatedTrackDutPositionYCorrelation(int cut
 }
 
 TH2D* CorrelationAnalyzer::BackExtrapolatedTrackDutPositionXCorrelation(int cut_n_hit_ch_back){
-    TH2D* hist = new TH2D(Form("back_extrapolated_track_dut_position_x_corr_%p", this), ";Reconstructed DUT Position Back X [mm];Extrapolated DUT Position Back X[mm]", 16, -1, 1, 16, -1, 1);
+    TH2D* hist = new TH2D(Form("back_extrapolated_track_dut_position_x_corr_%p", this), ";Reconstructed DUT Position Back X [mm];Extrapolated DUT Position Back X[mm]", 16, -2, 2, 16, -2, 2);
 
     MatchedHitAnalyzer mha(hd_);
 
@@ -283,7 +283,7 @@ TH2D* CorrelationAnalyzer::BackExtrapolatedTrackDutPositionXCorrelation(int cut_
 }
 
 TH2D* CorrelationAnalyzer::BackExtrapolatedTrackDutPositionYCorrelation(int cut_n_hit_ch_back){
-    TH2D* hist = new TH2D(Form("back_extrapolated_track_dut_position_y_corr_%p", this), ";Reconstructed DUT Position Back Y [mm];Extrapolated DUT Position Back Y[mm]", 16, -1, 1, 16, -1, 1);
+    TH2D* hist = new TH2D(Form("back_extrapolated_track_dut_position_y_corr_%p", this), ";Reconstructed DUT Position Back Y [mm];Extrapolated DUT Position Back Y[mm]", 16, -2, 2, 16, -2, 2);
 
     MatchedHitAnalyzer mha(hd_);
 

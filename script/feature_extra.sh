@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for file in ../data/root/*.root
+for file in ../data/root/run_054*old.root
 do
-    ./hit_extraction "$file"
+    ./feature_extractor "$file"
 done

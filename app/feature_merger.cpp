@@ -32,6 +32,7 @@ int main(int argc, char* argv[]){
     std::array<double, ThresholdData::nthres> fall_time;
     std::array<double, ThresholdData::nthres> charge;
     std::array<double, ThresholdData::nthres> tot;
+    std::array<double, ThresholdData::nthres> raise_slope;
 
     // +------------------+
     // |create output file|
@@ -51,6 +52,7 @@ int main(int argc, char* argv[]){
         tree_out->Branch(("fall_time_th" + std::to_string(ThresholdData::thresholds[i])).c_str(), &fall_time[i]);
         tree_out->Branch(("charge_th" + std::to_string(ThresholdData::thresholds[i])).c_str(), &charge[i]);
         tree_out->Branch(("tot_th" + std::to_string(ThresholdData::thresholds[i])).c_str(), &tot[i]);
+        tree_out->Branch(("raise_slope_th" + std::to_string(ThresholdData::thresholds[i])).c_str(), &raise_slope[i]);
     }
 
     // +--------------------+
@@ -93,6 +95,7 @@ int main(int argc, char* argv[]){
             tree_in->SetBranchAddress(("fall_time_th" + std::to_string(ThresholdData::thresholds[i])).c_str(), &fall_time[i]);
             tree_in->SetBranchAddress(("charge_th" + std::to_string(ThresholdData::thresholds[i])).c_str(), &charge[i]);
             tree_in->SetBranchAddress(("tot_th" + std::to_string(ThresholdData::thresholds[i])).c_str(), &tot[i]);
+            tree_in->SetBranchAddress(("raise_slope_th" + std::to_string(ThresholdData::thresholds[i])).c_str(), &raise_slope[i]);
         }
 
         const Long64_t nentries = tree_in->GetEntries();

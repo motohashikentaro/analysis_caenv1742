@@ -31,6 +31,7 @@ FeatureReader::FeatureReader(char* input_path){
         fd_.tree_->SetBranchAddress(("fall_time_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &fd_.ef_.fall_times[ithres]);
         fd_.tree_->SetBranchAddress(("charge_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &fd_.ef_.charges[ithres]);
         fd_.tree_->SetBranchAddress(("tot_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &fd_.ef_.tots[ithres]);
+        fd_.tree_->SetBranchAddress(("raise_slope_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &fd_.ef_.raise_slopes[ithres]);
     }
 
     fd_.nentries_ = fd_.tree_->GetEntries();

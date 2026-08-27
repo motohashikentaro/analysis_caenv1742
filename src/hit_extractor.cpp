@@ -21,6 +21,7 @@ void HitExtractor::HitExtraction(const SelectionConditions::SelectionCondition& 
     tree->Branch("fall_time", &eh.fall_time);
     tree->Branch("charge", &eh.charge);
     tree->Branch("tot", &eh.tot);
+    tree->Branch("raise_slope", &eh.raise_slope);
 
     // read root file
     for(Long64_t entry=0; entry<fd_.nentries_; entry++){
@@ -41,6 +42,7 @@ void HitExtractor::HitExtraction(const SelectionConditions::SelectionCondition& 
             eh.fall_time = fd_.ef_.fall_times[*threshold_idx];
             eh.charge = fd_.ef_.charges[*threshold_idx];
             eh.tot = fd_.ef_.tots[*threshold_idx];
+            eh.raise_slope = fd_.ef_.raise_slopes[*threshold_idx];
             tree->Fill();
         }
 
@@ -59,6 +61,7 @@ void HitExtractor::HitExtraction(const SelectionConditions::SelectionCondition& 
             eh.fall_time = fd_.ef_.fall_times[*threshold_idx];
             eh.charge = fd_.ef_.charges[*threshold_idx];
             eh.tot = fd_.ef_.tots[*threshold_idx];
+            eh.raise_slope = fd_.ef_.raise_slopes[*threshold_idx];
             tree->Fill();
         }
     }

@@ -5,7 +5,7 @@ int main(int argc, char* argv[]){
 
     RootfileReader rfr(argv[1]);
     FeatureExtractor fe(rfr.GetRootData());
-    fe.FeatcorExtraction(); 
+    fe.FeatureExtractionOld(); 
     
     return 0;
 }

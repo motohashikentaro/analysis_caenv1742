@@ -15,8 +15,8 @@ int main(int argc, char* argv[]){
     FeatureReader fr(argv[1]);
     HitExtractor he(fr.GetFeatureData());
 
-    SelectionConditions::SelectionCondition tracker_condition{"Standard", SelectionConditions::StandardTrackerCondition};
-    SelectionConditions::SelectionCondition dut_condition{"Standard", SelectionConditions::StandardDutCondition};
+    SelectionConditions::SelectionCondition tracker_condition{"ForSub", SelectionConditions::ForSubTrackerCondition};
+    SelectionConditions::SelectionCondition dut_condition{"ForSub", SelectionConditions::ForSubDutCondition};
     he.HitExtraction(tracker_condition, dut_condition);
 
     return 0;

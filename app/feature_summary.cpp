@@ -12,6 +12,7 @@
 #include <TStyle.h>
 #include <TColor.h>
 #include <TF1.h>
+#include <TLine.h>
 
 int main(int argc, char* argv[]){
     if(argc != 5 && argc != 6){
@@ -34,6 +35,13 @@ int main(int argc, char* argv[]){
     TH1D* hist7 = fa.ChargePerPeakDistro(board, ch, target_threshold);
     TH1D* hist8 = fa.TotPerPeakDistro(board, ch, target_threshold);
     TH1D* hist9 = fa.ChargeMinusAlphaAdcDistro(board, ch, target_threshold);
+    TH1D* hist10 = fa.TotMinusAlphaAdcDistro(board, ch, target_threshold);
+    TH1D* hist11 = fa.SlopeDistro(board, ch, target_threshold);
+    TH2D* hist12 = fa.TotVsSlope(board, ch, target_threshold);
+    TH2D* hist13 = fa.PeakVsSlope(board, ch, target_threshold);
+    TH2D* hist14 = fa.ChargeVsSlope(board, ch, target_threshold);
+    TH2D* hist15 = fa.PeaktimeVsSlope(board, ch, target_threshold);
+    TH2D* hist16 = fa.PeakVsPeaktime(board, ch, target_threshold);
 
     gStyle->SetOptStat(0);
     auto pramary_color = TColor::GetColor("#008899");
@@ -74,6 +82,19 @@ int main(int argc, char* argv[]){
         }
         histograms2d[i]->Draw("COLZ");
 
+        if(i == 0){
+            if(argc > 5 && std::string(argv[5]) == "line_combined"){
+                TLine* cut_line1 = new TLine(20, 0, 20, 1000);
+                cut_line1->SetLineColor(kRed);
+                cut_line1->SetLineWidth(2);
+                cut_line1->Draw("SAME");
+                TF1* cut_line2 = new TF1("cut_line2", "2.5*x-60", 30, 80);
+                cut_line2->SetLineColor(kRed);
+                cut_line2->SetLineWidth(2);
+                cut_line2->Draw("SAME");
+            }
+        }
+
         if(i == 1){
             if(argc > 5 && std::string(argv[5]) == "line_linear"){
                 TF1* cut_line2 = new TF1("cut_line2", "0.04*x", 0, 400);
@@ -81,10 +102,12 @@ int main(int argc, char* argv[]){
                 cut_line2->Draw("SAME");
             }
             if(argc > 5 && std::string(argv[5]) == "line_combined"){
-                TF1* cut_line1 = new TF1("cut_line1", "0", 0, 30);
+                TLine* cut_line1 = new TLine(20, 0, 20, 15);
+                cut_line1->SetLineColor(kRed);
                 cut_line1->SetLineWidth(2);
                 cut_line1->Draw("SAME");
-                TF1* cut_line2 = new TF1("cut_line2", "0.04*x", 45, 100);
+                TF1* cut_line2 = new TF1("cut_line2", "0.04*x+0.6", 25, 80);
+                cut_line2->SetLineColor(kRed);
                 cut_line2->SetLineWidth(2);
                 cut_line2->Draw("SAME");
             }
@@ -100,22 +123,26 @@ int main(int argc, char* argv[]){
     canvas2d->SaveAs(("./../result/run_" + fr.GetFeatureData().run_number_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + "_feature_summary_2d.png").c_str());
 
     // etc per peak
-    auto* canvas_per_peak = PlotSupporter::MakeCanvas2D("canvas_per_peak", 3, 1);
-    std::array<TH1*, 3> histograms_per_peak = {hist7, hist8, hist9};
+    auto* canvas_per_peak = PlotSupporter::MakeCanvas2D("canvas_per_peak", 4, 1);
+    std::array<TH1*, 4> histograms_per_peak = {hist7, hist8, hist9, hist10};
     for(size_t i = 0; i < histograms_per_peak.size(); ++i){
         canvas_per_peak->cd(i + 1);
         PlotSupporter::SetHistStyle1D(histograms_per_peak[i]);
         if(i == 0){
             histograms_per_peak[i]->GetXaxis()->SetRangeUser(0, 7);
-            histograms_per_peak[i]->GetYaxis()->SetRangeUser(0, 18000);
+            histograms_per_peak[i]->GetYaxis()->SetRangeUser(0, 2000);
         }
         if(i == 1){
             histograms_per_peak[i]->GetXaxis()->SetRangeUser(0, 0.2);
-            histograms_per_peak[i]->GetYaxis()->SetRangeUser(0, 18000);
+            histograms_per_peak[i]->GetYaxis()->SetRangeUser(0, 2000);
         }
         if(i == 2){
-            histograms_per_peak[i]->GetXaxis()->SetRangeUser(-400, 400);
-            histograms_per_peak[i]->GetYaxis()->SetRangeUser(0, 18000);
+            histograms_per_peak[i]->GetXaxis()->SetRangeUser(-200, 200);
+            histograms_per_peak[i]->GetYaxis()->SetRangeUser(0, 2000);
+        }
+        if(i == 3){
+            histograms_per_peak[i]->GetXaxis()->SetRangeUser(-10, 10);
+            histograms_per_peak[i]->GetYaxis()->SetRangeUser(0, 2000);
         }
         histograms_per_peak[i]->Draw("HIST");
         latex->DrawLatex(0.70, 0.85, Form("Run %s", (fr.GetFeatureData()).run_number_.c_str()));
@@ -125,6 +152,45 @@ int main(int argc, char* argv[]){
 
     canvas_per_peak->Update();
     canvas_per_peak->SaveAs(("./../result/run_" + fr.GetFeatureData().run_number_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + "_feature_summary_per_peak.png").c_str());
+
+    auto* canvas_slope_only = PlotSupporter::MakeCanvas1D("canvas_slope_only", 1, 1);
+    PlotSupporter::SetHistStyle1D(hist11);
+    hist11->GetXaxis()->SetRangeUser(0, 80);
+    hist11->GetYaxis()->SetRangeUser(0, 2000);
+    hist11->Draw("HIST");
+    latex->DrawLatex(0.70, 0.85, Form("Run %s", (fr.GetFeatureData()).run_number_.c_str()));
+    latex->DrawLatex(0.70, 0.80, Form("Board %d, Ch %d", board, ch));
+    latex->DrawLatex(0.70, 0.75, Form("Threshold %d ADC", target_threshold));
+    canvas_slope_only->Update();
+    canvas_slope_only->SaveAs(("./../result/run_" + fr.GetFeatureData().run_number_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + "_feature_summary_slope_only.png").c_str());
+
+    // Slope and TotVsSlope
+    auto* canvas_slope = PlotSupporter::MakeCanvas2D("canvas_slope", 3, 2);
+    std::array<TH2D*, 5> histograms_slope = {hist12, hist13, hist14, hist15, hist16};
+    for(size_t i = 0; i < histograms_slope.size(); ++i){
+        canvas_slope->cd(i + 1);
+        PlotSupporter::SetHistStyle2D(histograms_slope[i]);
+        if(i == 0){
+            histograms_slope[i]->GetXaxis()->SetRangeUser(0, 15);
+            histograms_slope[i]->GetYaxis()->SetRangeUser(0, 80);
+        }
+        if(i == 1){
+            histograms_slope[i]->GetXaxis()->SetRangeUser(0, 400);
+            histograms_slope[i]->GetYaxis()->SetRangeUser(0, 80);
+        }
+        if(i == 2){
+            histograms_slope[i]->GetXaxis()->SetRangeUser(0, 1000);
+            histograms_slope[i]->GetYaxis()->SetRangeUser(0, 80);
+        }
+        histograms_slope[i]->Draw("COLZ");
+        latex->DrawLatex(0.65, 0.85, Form("Run %s", (fr.GetFeatureData()).run_number_.c_str()));
+        latex->DrawLatex(0.65, 0.80, Form("Board %d, Ch %d", board, ch));
+        latex->DrawLatex(0.65, 0.75, Form("Threshold %d ADC", target_threshold));
+        latex->DrawLatex(0.65, 0.70, Form("Entries: %.0f / 200000", histograms_slope[i]->GetEntries()));
+    }
+
+    canvas_slope->Update();
+    canvas_slope->SaveAs(("./../result/run_" + fr.GetFeatureData().run_number_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + "_feature_summary_slope.png").c_str());
 
     return 0;
 }

@@ -41,9 +41,9 @@ OBJ = \
 APPS = \
 	   hit_merger \
 	   feature_merger \
-	   waveform \
-	   waveform_map \
+	   waveform_search \
 	   feature_extractor \
+	   feature_extractor_old \
 	   feature_summary \
 	   feature_summary_per_canvas \
 	   hit_extractor \
@@ -53,9 +53,7 @@ APPS = \
 	   correlation_summary \
 	   hit_checker \
 	   rootfile_checker \
-	   hit_event_extractor \
-	   hit_event_checker 
-
+	   hit_event_extractor 
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 

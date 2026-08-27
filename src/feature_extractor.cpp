@@ -15,6 +15,8 @@
 void FeatureExtractor::FeatureExtraction(){
     constexpr int kskipsample=10;
     constexpr int kpedestalcalc=50;
+    constexpr int peak_search_start=110;
+    constexpr int peak_search_end=220;
     EvtFeature ef;
 
     TFile* fout = new TFile(("./../data/feature/feature_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
@@ -35,6 +37,7 @@ void FeatureExtractor::FeatureExtraction(){
         tree->Branch(("fall_time_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.fall_times[ithres]);
         tree->Branch(("charge_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.charges[ithres]);
         tree->Branch(("tot_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.tots[ithres]);
+        tree->Branch(("raise_slope_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.raise_slopes[ithres]);
     }
 
     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
@@ -62,7 +65,7 @@ void FeatureExtractor::FeatureExtraction(){
                 // +------------+
                 ef.peak_time=-1;
                 ef.peak_adc=std::numeric_limits<double>::max();
-                for(int sample=kskipsample; sample<rd_.nsample; sample++){
+                for(int sample=peak_search_start; sample<=peak_search_end; sample++){
                     double adc = rd_.ev_.amp[board][ch][sample] - ef.pedestal;
                     if(adc < ef.peak_adc){
                         ef.peak_adc=adc;
@@ -72,18 +75,19 @@ void FeatureExtractor::FeatureExtraction(){
 
                 // calculate feature that depends on threshold
                 // use threshold <thresholds> in feature_extractor.h
-                ef.raise_times.fill(-1.0);
-                ef.fall_times.fill(-1.0);
-                ef.charges.fill(0.0);
-                ef.tots.fill(0.0);
+                ef.raise_times.fill(-999.0);
+                ef.fall_times.fill(-999.0);
+                ef.charges.fill(-999.0);
+                ef.tots.fill(-999.0);
+                ef.raise_slopes.fill(999.0);
 
                 for(size_t ithres=0; ithres<ThresholdData::nthres; ithres++){
                     int thres = ThresholdData::thresholds[ithres];
                     if(ef.peak_adc > -thres) continue;
 
-                    // +------------+
-                    // | raise time |
-                    // +------------+
+                    // +--------------------+
+                    // | raise time & slope |
+                    // +--------------------+
                     for(int sample=ef.peak_time; sample>0; sample--){
                         double adc1 = rd_.ev_.amp[board][ch][sample] - ef.pedestal;
                         double adc2 = rd_.ev_.amp[board][ch][sample - 1] -ef.pedestal;
@@ -91,6 +95,7 @@ void FeatureExtractor::FeatureExtraction(){
                         if(adc1 < -thres && adc2 >= -thres){
                             double frac = (-thres - adc2) / (adc1 - adc2);
                             ef.raise_times[ithres] = (sample - 1) + frac;
+                            ef.raise_slopes[ithres] = adc1 - adc2;
                             break;
                         }
                     }
@@ -158,14 +163,12 @@ void FeatureExtractor::FeatureExtraction(){
     delete fout;
 }
 
-void FeatureExtractor::FeatcorExtraction(){
+void FeatureExtractor::FeatureExtractionOld(){
     constexpr int kskipsample=10;
     constexpr int kpedestalcalc=50;
-    constexpr int peak_search_start=110;
-    constexpr int peak_search_end=220;
     EvtFeature ef;
 
-    TFile* fout = new TFile(("./../data/feature/featcor_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
+    TFile* fout = new TFile(("./../data/feature/feature_" + rd_.run_number_ + "_old.root").c_str(), "RECREATE");
     TTree* tree = new TTree("tree", "Waveform Features");
     
     tree->Branch("evt", &ef.evt);
@@ -183,6 +186,7 @@ void FeatureExtractor::FeatcorExtraction(){
         tree->Branch(("fall_time_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.fall_times[ithres]);
         tree->Branch(("charge_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.charges[ithres]);
         tree->Branch(("tot_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.tots[ithres]);
+        tree->Branch(("raise_slope_th" + std::to_string(ThresholdData::thresholds[ithres])).c_str(), &ef.raise_slopes[ithres]);
     }
 
     for(Long64_t evt=0; evt<rd_.nentries_; evt++){
@@ -210,7 +214,7 @@ void FeatureExtractor::FeatcorExtraction(){
                 // +------------+
                 ef.peak_time=-1;
                 ef.peak_adc=std::numeric_limits<double>::max();
-                for(int sample=peak_search_start; sample<=peak_search_end; sample++){
+                for(int sample=kskipsample; sample<rd_.nsample; sample++){
                     double adc = rd_.ev_.amp[board][ch][sample] - ef.pedestal;
                     if(adc < ef.peak_adc){
                         ef.peak_adc=adc;
@@ -224,6 +228,7 @@ void FeatureExtractor::FeatcorExtraction(){
                 ef.fall_times.fill(-1.0);
                 ef.charges.fill(0.0);
                 ef.tots.fill(0.0);
+                ef.raise_slopes.fill(0.0);
 
                 for(size_t ithres=0; ithres<ThresholdData::nthres; ithres++){
                     int thres = ThresholdData::thresholds[ithres];
@@ -239,6 +244,7 @@ void FeatureExtractor::FeatcorExtraction(){
                         if(adc1 < -thres && adc2 >= -thres){
                             double frac = (-thres - adc2) / (adc1 - adc2);
                             ef.raise_times[ithres] = (sample - 1) + frac;
+                            ef.raise_slopes[ithres] = adc1 - adc2;
                             break;
                         }
                     }

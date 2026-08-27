@@ -31,6 +31,8 @@ HitReader::HitReader(char* input_path){
     hd_.tree_->SetBranchAddress("charge", &hd_.eh_.charge);
     hd_.tree_->SetBranchAddress("tot", &hd_.eh_.tot);
 
+    hd_.tree_->SetBranchAddress("raise_slope", &hd_.eh_.raise_slope);
+
     hd_.nentries_ = hd_.tree_->GetEntries();
 }
 

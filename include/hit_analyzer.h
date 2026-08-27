@@ -22,6 +22,7 @@ class HitAnalyzer{
         TH1D* TotDistro(int board, int ch);
         TH2D* PeakVsTot(int board, int ch);
 
+
     private:
         HitData& hd_;
 };

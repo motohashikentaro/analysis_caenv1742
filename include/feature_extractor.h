@@ -28,6 +28,8 @@ struct EvtFeature{
     std::array<double, ThresholdData::nthres> fall_times;  // time when the waveform crosses the threshold
     std::array<double, ThresholdData::nthres> charges;  // integral of the waveform below the threshold
     std::array<double, ThresholdData::nthres> tots;  // time difference between raise_time and fall_time
+
+    std::array<double, ThresholdData::nthres> raise_slopes; 
 };
 
 class FeatureExtractor{
@@ -35,7 +37,7 @@ class FeatureExtractor{
         FeatureExtractor(RootData& rd): rd_(rd){};
 
         void FeatureExtraction();
-        void FeatcorExtraction();
+        void FeatureExtractionOld();
 
     private:
         RootData& rd_;

@@ -11,6 +11,7 @@
 #include <TLatex.h>
 #include <TStyle.h>
 #include <TColor.h>
+#include <TFile.h>
 
 int main(int argc, char* argv[]){
     if(argc != 4){
@@ -74,6 +75,16 @@ int main(int argc, char* argv[]){
 
     canvas2d->Update();
     canvas2d->SaveAs(("./../result/run_" + (hr.GetHitData()).run_number_condition_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_hit_summary_2d.png").c_str());
+
+    TFile* output_file = new TFile(("./../result/run_" + (hr.GetHitData()).run_number_condition_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_hit_summary.root").c_str(), "RECREATE");
+    output_file->cd();
+    for(auto hist : histograms){
+        hist->Write();
+    }
+    for(auto hist2d : histograms2d){
+        hist2d->Write();
+    }
+    output_file->Close();
 
     return 0;
 }

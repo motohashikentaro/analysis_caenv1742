@@ -9,7 +9,7 @@ class RootfileAnalyzer{
     public:
         RootfileAnalyzer(RootData& rd): rd_(rd){};  // Constructor to initialize RootData reference
 
-        std::array<TGraph*, 1000> Waveform(int target_board, int target_ch, int range_start=0, int range_end=1024);  // Method to get waveforms for a specific board and channel
+        std::vector<TGraph*> Waveform(int target_board, int target_ch, const std::vector<Long64_t>& target_evt, int range_start=0, int range_end=1024);  // Method to get waveforms for a specific board and channel
 
     private:
         RootData& rd_;

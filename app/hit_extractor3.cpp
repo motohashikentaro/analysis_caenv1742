@@ -15,8 +15,8 @@ int main(int argc, char* argv[]){
     FeatureReader fr(argv[1]);
     HitExtractor he(fr.GetFeatureData());
 
-    SelectionConditions::SelectionCondition tracker_condition{"LinearFunction", SelectionConditions::LinearFunctionTrackerCondition};
-    SelectionConditions::SelectionCondition dut_condition{"LinearFunction", SelectionConditions::LinearFunctionDutCondition};
+    SelectionConditions::SelectionCondition tracker_condition{"SlopeTot", SelectionConditions::SlopeTotTrackerCondition};
+    SelectionConditions::SelectionCondition dut_condition{"SlopeTot", SelectionConditions::SlopeTotDutCondition};
     he.HitExtraction(tracker_condition, dut_condition);
 
     return 0;

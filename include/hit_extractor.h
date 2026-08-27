@@ -21,6 +21,8 @@ struct EvtHit{
     double fall_time;  // time when the waveform crosses the threshold
     double charge;  // integral of the waveform below the threshold
     double tot;  // time difference between raise_time and fall_time
+
+    double raise_slope;  // slope of the waveform at the threshold crossing
 };
 
 class HitExtractor{

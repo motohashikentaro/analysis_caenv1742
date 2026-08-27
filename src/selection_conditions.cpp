@@ -44,7 +44,7 @@ std::optional<size_t> SelectionConditions::LinearFunctionTrackerCondition(const 
 }
 
 std::optional<size_t> SelectionConditions::CombinedFunctionTrackerCondition(const EvtFeature& ef){
-    constexpr size_t threshold_idx = 0;  // use threshold 30 for tracker
+    constexpr size_t threshold_idx = 3;  // use threshold 30 for tracker
 
     if(ef.peak_time < 110 || ef.peak_time > 220) return std::nullopt;
 
@@ -54,6 +54,25 @@ std::optional<size_t> SelectionConditions::CombinedFunctionTrackerCondition(cons
         if(ef.tots[threshold_idx] < 0.04 * -ef.peak_adc) return std::nullopt;
     }
 
+    return std::make_optional(static_cast<size_t>(threshold_idx));
+}
+
+std::optional<size_t> SelectionConditions::ForSubTrackerCondition(const EvtFeature& ef){
+    constexpr size_t threshold_idx = 3;  // use threshold 20 for tracker
+
+    if(ef.peak_adc > -ThresholdData::thresholds[threshold_idx]) return std::nullopt;
+    if(ef.peak_adc <= -30 && ef.peak_adc > -80){
+        if(ef.charges[threshold_idx] < 2.5 * -ef.peak_adc -60) return std::nullopt;
+    }
+    return std::make_optional(static_cast<size_t>(threshold_idx));
+}
+
+std::optional<size_t> SelectionConditions::SlopeTotTrackerCondition(const EvtFeature& ef){
+    constexpr size_t threshold_idx = 3;  // use threshold 20 for tracker
+
+    if(ef.peak_adc > -ThresholdData::thresholds[threshold_idx]) return std::nullopt;    
+    if(ef.tots[threshold_idx] < 4 && -ef.raise_slopes[threshold_idx] > 30) return std::nullopt;
+    
     return std::make_optional(static_cast<size_t>(threshold_idx));
 }
 
@@ -97,15 +116,34 @@ std::optional<size_t> SelectionConditions::LinearFunctionDutCondition(const EvtF
 }
 
 std::optional<size_t> SelectionConditions::CombinedFunctionDutCondition(const EvtFeature& ef){
-    constexpr size_t threshold_idx = 0;  // use threshold 30 for DUT
+    constexpr size_t threshold_idx = 3;  // use threshold 30 for DUT
 
     if(ef.peak_time < 110 || ef.peak_time > 220) return std::nullopt;
 
     if(ef.peak_adc > -ThresholdData::thresholds[threshold_idx]) return std::nullopt;
     // if(-ThresholdData::thresholds[threshold_idx] >= ef.peak_adc && ef.peak_adc > -50) is through
-    if(ef.peak_adc <= -35 && ef.peak_adc > -100){
-        if(ef.tots[threshold_idx] < 0.04 * -ef.peak_adc) return std::nullopt;
+    if(ef.peak_adc <= -25 && ef.peak_adc > -80){
+        if(ef.tots[threshold_idx] < 0.04 * -ef.peak_adc + 0.6) return std::nullopt;
     }
 
+    return std::make_optional(static_cast<size_t>(threshold_idx));
+}
+
+std::optional<size_t> SelectionConditions::ForSubDutCondition(const EvtFeature& ef){
+    constexpr size_t threshold_idx = 3;  // use threshold 20 for tracker
+
+    if(ef.peak_adc > -ThresholdData::thresholds[threshold_idx]) return std::nullopt;
+    if(ef.peak_adc <= -30 && ef.peak_adc > -80){
+        if(ef.charges[threshold_idx] < 2.5 * -ef.peak_adc -60) return std::nullopt;
+    }
+    return std::make_optional(static_cast<size_t>(threshold_idx));
+}
+
+std::optional<size_t> SelectionConditions::SlopeTotDutCondition(const EvtFeature& ef){
+    constexpr size_t threshold_idx = 3;  // use threshold 20 for DUT
+
+    if(ef.peak_adc > -ThresholdData::thresholds[threshold_idx]) return std::nullopt;    
+    if(ef.tots[threshold_idx] < 4 && -ef.raise_slopes[threshold_idx] > 30) return std::nullopt;
+    
     return std::make_optional(static_cast<size_t>(threshold_idx));
 }
