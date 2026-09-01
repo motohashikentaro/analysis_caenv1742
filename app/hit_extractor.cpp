@@ -11,12 +11,17 @@
 #include <TCanvas.h>
 
 int main(int argc, char* argv[]){
+    if(argc < 2){
+        std::cerr << "Usage: " << argv[0] << " <feature_root_file>" << std::endl;
+        return 1;
+    }
 
     FeatureReader fr(argv[1]);
     HitExtractor he(fr.GetFeatureData());
 
-    SelectionConditions::SelectionCondition tracker_condition{"ForSub", SelectionConditions::ForSubTrackerCondition};
-    SelectionConditions::SelectionCondition dut_condition{"ForSub", SelectionConditions::ForSubDutCondition};
+    const auto& tracker_condition = SelectionConditions::SlopeTotTracker;
+    const auto& dut_condition = SelectionConditions::SlopeTotDut;
+
     he.HitExtraction(tracker_condition, dut_condition);
 
     return 0;

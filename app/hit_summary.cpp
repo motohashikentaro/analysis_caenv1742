@@ -37,6 +37,9 @@ int main(int argc, char* argv[]){
     latex->SetNDC();
     latex->SetTextSize(0.04);
 
+    PlotSupporter ps(hr.GetHitData());
+    std::filesystem::path save_dir = ps.MakeSaveDir();
+
     // 1D histogram
     auto* canvas = PlotSupporter::MakeCanvas1D("canvas", 4, 1);
     std::array<TH1*, 4> histograms = {hist1, hist2, hist3, hist5};
@@ -46,12 +49,13 @@ int main(int argc, char* argv[]){
         if(i == 2) histograms[i]->GetXaxis()->SetRangeUser(1, 1000);
         if(i == 3) histograms[i]->GetXaxis()->SetRangeUser(1, 15);
         histograms[i]->Draw("HIST");
-        latex->DrawLatex(0.50, 0.80, Form("Run %s", (hr.GetHitData()).run_number_condition_.c_str()));
+        latex->DrawLatex(0.50, 0.80, Form("Run %s", (hr.GetHitData()).run_number_.c_str()));
         latex->DrawLatex(0.50, 0.77, Form("Board %d, Ch %d", board, ch));
     }
 
     canvas->Update();
-    canvas->SaveAs(("./../result/run_" + (hr.GetHitData()).run_number_condition_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_hit_summary.png").c_str());
+    std::string filename = "hit_summary_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + ".png";
+    canvas->SaveAs((save_dir / filename).string().c_str());
 
     // 2D histogram
     auto* canvas2d = PlotSupporter::MakeCanvas2D("canvas2d", 2, 1);
@@ -68,15 +72,16 @@ int main(int argc, char* argv[]){
             histograms2d[i]->GetYaxis()->SetRangeUser(0, 15);
         }
         histograms2d[i]->Draw("COLZ");
-        latex->DrawLatex(0.50, 0.30, Form("Run %s", (hr.GetHitData()).run_number_condition_.c_str()));
+        latex->DrawLatex(0.50, 0.30, Form("Run %s", (hr.GetHitData()).run_number_.c_str()));
         latex->DrawLatex(0.50, 0.27, Form("Board %d, Ch %d", board, ch));
         latex->DrawLatex(0.50, 0.24, Form("Entries: %.0f", histograms2d[i]->GetEntries()));
     }
 
     canvas2d->Update();
-    canvas2d->SaveAs(("./../result/run_" + (hr.GetHitData()).run_number_condition_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_hit_summary_2d.png").c_str());
+    std::string filename2d = "hit_summary_2d_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + ".png";
+    canvas2d->SaveAs((save_dir / filename2d).string().c_str());
 
-    TFile* output_file = new TFile(("./../result/run_" + (hr.GetHitData()).run_number_condition_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_hit_summary.root").c_str(), "RECREATE");
+    TFile* output_file = new TFile((save_dir / ("hit_summary_root_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + ".root")).string().c_str(), "RECREATE");
     output_file->cd();
     for(auto hist : histograms){
         hist->Write();

@@ -4,25 +4,11 @@
 #include "./../include/channel_map.h"
 #include "./../include/hit_extractor.h"
 #include "./../include/hit_reader.h"
+#include "./../include/reconstruction_conditions.h"
 
 #include <vector>
 #include <array>
 #include <optional>
-
-struct StripHit{
-    double position;
-    double charge;
-};
-
-struct ReconstructedPixelPosition{
-    double x;
-    double y;
-};
-
-struct PixelHit{
-    PixelPosition position;
-    double charge;
-};
 
 struct ReconstructedHitPosition{
     double strip_position_front_x;
@@ -39,13 +25,11 @@ struct ReconstructedHitPosition{
 
 struct MatchedHitAnalyzer{
     public:
-        MatchedHitAnalyzer(HitData& hd): hd_(hd){};
+        MatchedHitAnalyzer(HitData& hd, const ReconstructionConditions::StripReconstructionCondition& strip_condition, const ReconstructionConditions::PixelReconstructionCondition& pixel_condition): 
+            hd_(hd), strip_condition_(strip_condition), pixel_condition_(pixel_condition){};
 
         bool Is4Through(const std::vector<EvtHit>& hits);
         bool Is6Through(const std::vector<EvtHit>& hits);
-
-        double ChargeWeightStripPosition(const std::vector<StripHit>& hits);
-        ReconstructedPixelPosition ChargeWeightPixelPosition(const std::vector<PixelHit>& hits);
 
         double CorrectStripPosition(double strip_position);
         ReconstructedPixelPosition CorrectPixelPosition(const ReconstructedPixelPosition& pixel_position);
@@ -86,6 +70,8 @@ struct MatchedHitAnalyzer{
         }
     private:
         HitData& hd_;
+        ReconstructionConditions::StripReconstructionCondition strip_condition_;
+        ReconstructionConditions::PixelReconstructionCondition pixel_condition_;
 };
 
 #endif

@@ -6,41 +6,79 @@ struct PixelPosition{
     int y;
 };
 
+// constexpr PixelPosition kChannelMap[2][16]{
+//     {  // board 1, lgad 0
+//         {1, 0}, // pixel 0   digi ch 0
+//         {0, 0}, // pixel 1   digi ch 1
+//         {1, 1}, // pixel 2   digi ch 2
+//         {0, 1}, // pixel 3   digi ch 3
+//         {1, 2}, // pixel 4   digi ch 4
+//         {0, 2}, // pixel 5   digi ch 5
+//         {1, 3}, // pixel 6   digi ch 6
+//         {0, 3}, // pixel 7   digi ch 7
+//         {3, 3}, // pixel 8   digi ch 8
+//         {2, 3}, // pixel 9   digi ch 9
+//         {3, 2}, // pixel 10  digi ch 10
+//         {2, 2}, // pixel 11  digi ch 11
+//         {3, 1}, // pixel 12  digi ch 12
+//         {2, 1}, // pixel 13  digi ch 13
+//         {3, 0}, // pixel 14  digi ch 14
+//         {2, 0}  // pixel 15  digi ch 15
+//     }, {  // board 1, lgad 1
+//         {1, 0}, // pixel 0   digi ch 16
+//         {0, 0}, // pixel 1   digi ch 17
+//         {1, 1}, // pixel 2   digi ch 18
+//         {0, 1}, // pixel 3   digi ch 19
+//         {1, 2}, // pixel 4   digi ch 20
+//         {0, 2}, // pixel 5   digi ch 21
+//         {1, 3}, // pixel 6   digi ch 22
+//         {0, 3}, // pixel 7   digi ch 23
+//         {3, 3}, // pixel 8   digi ch 24
+//         {2, 3}, // pixel 9   digi ch 25
+//         {3, 2}, // pixel 10  digi ch 26
+//         {2, 2}, // pixel 11  digi ch 27
+//         {3, 1}, // pixel 12  digi ch 28
+//         {2, 1}, // pixel 13  digi ch 29
+//         {3, 0}, // pixel 14  digi ch 30
+//         {2, 0}  // pixel 15  digi ch 31
+//     }
+// };
+
 constexpr PixelPosition kChannelMap[2][16]{
     {  // board 1, lgad 0
-        {1, 0}, // pixel 0   digi ch 0
-        {0, 0}, // pixel 1   digi ch 1
-        {1, 1}, // pixel 2   digi ch 2
-        {0, 1}, // pixel 3   digi ch 3
-        {1, 2}, // pixel 4   digi ch 4
-        {0, 2}, // pixel 5   digi ch 5
-        {1, 3}, // pixel 6   digi ch 6
-        {0, 3}, // pixel 7   digi ch 7
-        {3, 3}, // pixel 8   digi ch 8
-        {2, 3}, // pixel 9   digi ch 9
-        {3, 2}, // pixel 10  digi ch 10 
-        {2, 2}, // pixel 11  digi ch 11
-        {3, 1}, // pixel 12  digi ch 12
-        {2, 1}, // pixel 13  digi ch 13
-        {3, 0}, // pixel 14  digi ch 14
-        {2, 0}  // pixel 15  digi ch 15
+        {2, 0}, // pixel 0   digi ch 0
+        {3, 0}, // pixel 1   digi ch 1
+        {2, 1}, // pixel 2   digi ch 2
+        {3, 1}, // pixel 3   digi ch 3
+        {2, 2}, // pixel 4   digi ch 4
+        {3, 2}, // pixel 5   digi ch 5
+        {2, 3}, // pixel 6   digi ch 6
+        {3, 3}, // pixel 7   digi ch 7
+        {0, 3}, // pixel 8   digi ch 8
+        {1, 3}, // pixel 9   digi ch 9
+        {0, 2}, // pixel 10  digi ch 10
+        {1, 2}, // pixel 11  digi ch 11
+        {0, 1}, // pixel 12  digi ch 12
+        {1, 1}, // pixel 13  digi ch 13
+        {0, 0}, // pixel 14  digi ch 14
+        {1, 0}  // pixel 15  digi ch 15
     }, {  // board 1, lgad 1
-        {1, 0}, // pixel 0   digi ch 16
-        {0, 0}, // pixel 1   digi ch 17
-        {1, 1}, // pixel 2   digi ch 18
-        {0, 1}, // pixel 3   digi ch 19
-        {1, 2}, // pixel 4   digi ch 20
-        {0, 2}, // pixel 5   digi ch 21
-        {1, 3}, // pixel 6   digi ch 22
-        {0, 3}, // pixel 7   digi ch 23
-        {3, 3}, // pixel 8   digi ch 24
-        {2, 3}, // pixel 9   digi ch 25
-        {3, 2}, // pixel 10  digi ch 26
-        {2, 2}, // pixel 11  digi ch 27
-        {3, 1}, // pixel 12  digi ch 28
-        {2, 1}, // pixel 13  digi ch 29
-        {3, 0}, // pixel 14  digi ch 30
-        {2, 0}  // pixel 15  digi ch 31
+        {2, 0}, // pixel 0   digi ch 16
+        {3, 0}, // pixel 1   digi ch 17
+        {2, 1}, // pixel 2   digi ch 18
+        {3, 1}, // pixel 3   digi ch 19
+        {2, 2}, // pixel 4   digi ch 20
+        {3, 2}, // pixel 5   digi ch 21
+        {2, 3}, // pixel 6   digi ch 22
+        {3, 3}, // pixel 7   digi ch 23
+        {0, 3}, // pixel 8   digi ch 24
+        {1, 3}, // pixel 9   digi ch 25
+        {0, 2}, // pixel 10  digi ch 26
+        {1, 2}, // pixel 11  digi ch 27
+        {0, 1}, // pixel 12  digi ch 28
+        {1, 1}, // pixel 13  digi ch 29
+        {0, 0}, // pixel 14  digi ch 30
+        {1, 0}  // pixel 15  digi ch 31
     }
 };
 

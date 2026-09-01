@@ -14,12 +14,8 @@ class SelectionConditions{
             SelectionConditionFunction condition;
         };
 
-        static std::optional<size_t> StandardTrackerCondition(const EvtFeature& ef);
-        static std::optional<size_t> StrictTrackerCondition(const EvtFeature& ef);
-        static std::optional<size_t> TotPerPeakTrackerCondition(const EvtFeature& ef);
         static std::optional<size_t> LinearFunctionTrackerCondition(const EvtFeature& ef);
         static std::optional<size_t> CombinedFunctionTrackerCondition(const EvtFeature& ef);
-        static std::optional<size_t> ForSubTrackerCondition(const EvtFeature& ef);
         static std::optional<size_t> SlopeTotTrackerCondition(const EvtFeature& ef);
 
         static std::optional<size_t> StandardDutCondition(const EvtFeature& ef);
@@ -29,6 +25,18 @@ class SelectionConditions{
         static std::optional<size_t> CombinedFunctionDutCondition(const EvtFeature& ef);
         static std::optional<size_t> ForSubDutCondition(const EvtFeature& ef);
         static std::optional<size_t> SlopeTotDutCondition(const EvtFeature& ef);
+
+        static const SelectionCondition LinearFunctionTracker;
+        static const SelectionCondition CombinedFunctionTracker;
+        static const SelectionCondition SlopeTotTracker;
+
+        static const SelectionCondition StandardDut;
+        static const SelectionCondition StrictDut;
+        static const SelectionCondition TotPerPeakDut;
+        static const SelectionCondition LinearFunctionDut;
+        static const SelectionCondition CombinedFunctionDut;
+        static const SelectionCondition ForSubDut;
+        static const SelectionCondition SlopeTotDut;
 };  
 
 #endif

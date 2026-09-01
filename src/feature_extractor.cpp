@@ -11,15 +11,28 @@
 
 #include <TFile.h>
 #include <TTree.h>
+#include <TNamed.h>
 
 void FeatureExtractor::FeatureExtraction(){
     constexpr int kskipsample=10;
     constexpr int kpedestalcalc=50;
     constexpr int peak_search_start=110;
     constexpr int peak_search_end=220;
+
+    constexpr const char* feature_condition = "Standard";
+
     EvtFeature ef;
 
-    TFile* fout = new TFile(("./../data/feature/feature_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
+    // TFile* fout = new TFile(("./../data/feature/feature_" + rd_.run_number_ + ".root").c_str(), "RECREATE");
+    const std::filesystem::path output_dir = std::filesystem::path("./../data/feature") / feature_condition;
+    std::filesystem::create_directories(output_dir);
+    const std::filesystem::path output_path = output_dir / ("feature_" + rd_.run_number_ + ".root");
+
+    TFile* fout = new TFile(output_path.string().c_str(), "RECREATE");
+
+    TNamed run_number("run_number", rd_.run_number_.c_str());
+    TNamed feature_condition_metadata("feature_condition", feature_condition);
+
     TTree* tree = new TTree("tree", "Waveform Features");
     
     tree->Branch("evt", &ef.evt);
@@ -157,6 +170,8 @@ void FeatureExtractor::FeatureExtraction(){
     fout->cd();
 
     tree->Write();
+    run_number.Write();
+    feature_condition_metadata.Write();
 
     fout->Close();
 
@@ -166,9 +181,21 @@ void FeatureExtractor::FeatureExtraction(){
 void FeatureExtractor::FeatureExtractionOld(){
     constexpr int kskipsample=10;
     constexpr int kpedestalcalc=50;
+
+    constexpr const char* feature_condition = "Old";
+
     EvtFeature ef;
 
-    TFile* fout = new TFile(("./../data/feature/feature_" + rd_.run_number_ + "_old.root").c_str(), "RECREATE");
+    // TFile* fout = new TFile(("./../data/feature/feature_" + rd_.run_number_ + "_old.root").c_str(), "RECREATE");
+    const std::filesystem::path output_dir = std::filesystem::path("./../data/feature") / feature_condition;
+    std::filesystem::create_directories(output_dir);
+    const std::filesystem::path output_path = output_dir / ("feature_" + rd_.run_number_ + ".root");
+
+    TFile* fout = new TFile(output_path.string().c_str(), "RECREATE");
+
+    TNamed run_number("run_number", rd_.run_number_.c_str());
+    TNamed feature_condition_metadata("feature_condition", feature_condition);
+
     TTree* tree = new TTree("tree", "Waveform Features");
     
     tree->Branch("evt", &ef.evt);
@@ -306,6 +333,8 @@ void FeatureExtractor::FeatureExtractionOld(){
     fout->cd();
 
     tree->Write();
+    run_number.Write();
+    feature_condition_metadata.Write();
 
     fout->Close();
 

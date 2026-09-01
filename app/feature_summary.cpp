@@ -49,6 +49,9 @@ int main(int argc, char* argv[]){
     latex->SetNDC();
     latex->SetTextSize(0.04);
 
+    PlotSupporter ps(fr.GetFeatureData());
+    std::filesystem::path save_dir = ps.MakeSaveDir();
+
     // 1D histogram
     auto* canvas = PlotSupporter::MakeCanvas1D("canvas", 4, 1);
     std::array<TH1*, 4> histograms = {hist1, hist2, hist3, hist5};
@@ -64,7 +67,8 @@ int main(int argc, char* argv[]){
     }
 
     canvas->Update();
-    canvas->SaveAs(("./../result/run_" + fr.GetFeatureData().run_number_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + "_feature_summary.png").c_str());
+    std::string filename = "feature_summary_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + ".png";
+    canvas->SaveAs((save_dir / filename).string().c_str());
 
     // 2D histogram
     auto* canvas2d = PlotSupporter::MakeCanvas2D("canvas2d", 2, 1);
@@ -120,7 +124,8 @@ int main(int argc, char* argv[]){
     }
 
     canvas2d->Update();
-    canvas2d->SaveAs(("./../result/run_" + fr.GetFeatureData().run_number_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + "_feature_summary_2d.png").c_str());
+    std::string filename2d = "feature_summary_2d_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + ".png";
+    canvas2d->SaveAs((save_dir / filename2d).string().c_str());
 
     // etc per peak
     auto* canvas_per_peak = PlotSupporter::MakeCanvas2D("canvas_per_peak", 4, 1);
@@ -151,7 +156,8 @@ int main(int argc, char* argv[]){
     }
 
     canvas_per_peak->Update();
-    canvas_per_peak->SaveAs(("./../result/run_" + fr.GetFeatureData().run_number_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + "_feature_summary_per_peak.png").c_str());
+    std::string filename_per_peak = "feature_summary_per_peak_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + ".png";
+    canvas_per_peak->SaveAs((save_dir / filename_per_peak).string().c_str());
 
     auto* canvas_slope_only = PlotSupporter::MakeCanvas1D("canvas_slope_only", 1, 1);
     PlotSupporter::SetHistStyle1D(hist11);
@@ -162,7 +168,8 @@ int main(int argc, char* argv[]){
     latex->DrawLatex(0.70, 0.80, Form("Board %d, Ch %d", board, ch));
     latex->DrawLatex(0.70, 0.75, Form("Threshold %d ADC", target_threshold));
     canvas_slope_only->Update();
-    canvas_slope_only->SaveAs(("./../result/run_" + fr.GetFeatureData().run_number_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + "_feature_summary_slope_only.png").c_str());
+    std::string filename_slope_only = "feature_summary_slope_only_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + ".png";
+    canvas_slope_only->SaveAs((save_dir / filename_slope_only).string().c_str());
 
     // Slope and TotVsSlope
     auto* canvas_slope = PlotSupporter::MakeCanvas2D("canvas_slope", 3, 2);
@@ -190,7 +197,8 @@ int main(int argc, char* argv[]){
     }
 
     canvas_slope->Update();
-    canvas_slope->SaveAs(("./../result/run_" + fr.GetFeatureData().run_number_ + "_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + "_feature_summary_slope.png").c_str());
+    std::string filename_slope = "feature_summary_slope_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + ".png";
+    canvas_slope->SaveAs((save_dir / filename_slope).string().c_str());
 
     return 0;
 }

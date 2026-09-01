@@ -2,17 +2,30 @@
 #include "./../include/feature_extractor.h"
 
 #include <filesystem>
+#include <stdexcept>
 
 #include <TFile.h>
 #include <TTree.h>
+#include <TNamed.h>
 
-FeatureReader::FeatureReader(char* input_path){
+FeatureReader::FeatureReader(const char* input_path){
     fd_.file_ = TFile::Open(input_path);
 
     std::filesystem::path path(input_path);
     fd_.filename_ = path.stem().string();
 
-    fd_.run_number_ = fd_.filename_.substr(8);
+    // metadata
+    auto* run_number_metadata = (TNamed*)fd_.file_->Get("run_number");
+    auto* feature_condition_metadata = (TNamed*)fd_.file_->Get("feature_condition");
+    if(!run_number_metadata || !feature_condition_metadata){
+        fd_.file_->Close();
+        delete fd_.file_;
+        fd_.file_ = nullptr;
+        throw std::runtime_error("Metadata not found in the ROOT file.");
+    }
+    fd_.run_number_ = run_number_metadata->GetTitle();
+    fd_.feature_condition_ = feature_condition_metadata->GetTitle();
+
 
     fd_.tree_ = (TTree*)fd_.file_->Get("tree");
 

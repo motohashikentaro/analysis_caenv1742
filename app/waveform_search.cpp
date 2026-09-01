@@ -2,9 +2,14 @@
 #include "./../include/rootfile_reader.h"
 #include "./../include/feature_analyzer.h"
 #include "./../include/feature_reader.h"
+#include "./../include/plot_supporter.h"
 
 #include <array>
 #include <iostream>
+#include <vector>
+#include <functional>
+#include <algorithm>
+#include <string>
 
 #include <TCanvas.h>
 #include <TLatex.h>
@@ -13,7 +18,7 @@
 #include <TAxis.h>
 
 int main(int argc, char* argv[]){
-    if(argc != 3){
+    if(argc != 5){
         std::cerr << "Usage: " << argv[0] << " <raw_root_file> <feature_file>" << std::endl;
         return 1;
     }
@@ -24,8 +29,8 @@ int main(int argc, char* argv[]){
     FeatureReader fr(argv[2]);
     FeatureAnalyzer fa(fr.GetFeatureData());
 
-    constexpr int board = 1;
-    constexpr int ch = 21;
+    int board = std::stoi(argv[3]);  // Assuming the board number is passed as the third argument
+    int ch = std::stoi(argv[4]);  // Assuming the channel number is passed as the fourth argument
     constexpr size_t max_events = 20;
     constexpr int range_start = 110;
     constexpr int range_end = 220;
@@ -63,7 +68,9 @@ int main(int argc, char* argv[]){
         }
     }
 
-    canvas->SaveAs("./../result/waveforms.png");
-    
+    PlotSupporter ps(rfr.GetRootData());
+    std::filesystem::path save_dir = ps.MakeSaveDir();
+    canvas->SaveAs((save_dir / "waveforms.png").string().c_str());
+
     return 0;
 }

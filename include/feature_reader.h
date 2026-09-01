@@ -11,16 +11,17 @@
 struct FeatureData{
     EvtFeature ef_;
 
-    TFile* file_;
+    TFile* file_ = nullptr;
     std::string filename_;
     std::string run_number_;
-    TTree* tree_;
-    Long64_t nentries_;
+    std::string feature_condition_;
+    TTree* tree_ = nullptr;
+    Long64_t nentries_ = 0;
 };
 
 class FeatureReader{
     public:
-        FeatureReader(char* input_path);
+        FeatureReader(const char* input_path);
         ~FeatureReader();
 
         FeatureData& GetFeatureData(){return fd_;}

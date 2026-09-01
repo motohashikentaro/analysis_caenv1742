@@ -25,24 +25,16 @@ int main(int argc, char** argv){
     TH2D* hist4 = ca.BackStripHitmap();
     TH2D* hist5 = ca.FrontDutHitmap();
     TH2D* hist6 = ca.BackDutHitmap();
-    TH2D* hist7 = ca.FrontStripFrontDutXCorrelation();
-    TH2D* hist8 = ca.FrontStripBackDutXCorrelation();
-    TH2D* hist9 = ca.BackStripFrontDutXCorrelation();
-    TH2D* hist10 = ca.BackStripBackDutXCorrelation();
-    TH2D* hist11 = ca.FrontStripFrontDutYCorrelation();
-    TH2D* hist12 = ca.FrontStripBackDutYCorrelation();
-    TH2D* hist13 = ca.BackStripFrontDutYCorrelation();
-    TH2D* hist14 = ca.BackStripBackDutYCorrelation();
     TH2D* hist19 = ca.FrontExtrapolatedTrackHitmap();
     TH2D* hist20 = ca.BackExtrapolatedTrackHitmap();
     TH2D* hist21 = ca.FrontDutPositionExtrapolatedTrackXCorrelation();
     TH2D* hist22 = ca.BackDutPositionExtrapolatedTrackXCorrelation();
     TH2D* hist23 = ca.FrontDutPositionExtrapolatedTrackYCorrelation();
     TH2D* hist24 = ca.BackDutPositionExtrapolatedTrackYCorrelation();
-    TH1D* hist25 = ca.DifferenceFrontExtrapolatedTrackDutPositionX();
-    TH1D* hist26 = ca.DifferenceBackExtrapolatedTrackDutPositionX();
-    TH1D* hist27 = ca.DifferenceFrontExtrapolatedTrackDutPositionY();
-    TH1D* hist28 = ca.DifferenceBackExtrapolatedTrackDutPositionY();
+    TH1D* hist25 = ca.DifferenceFrontExtrapolatedTrackDutPositionXWithShower();
+    TH1D* hist26 = ca.DifferenceBackExtrapolatedTrackDutPositionXWithShower();
+    TH1D* hist27 = ca.DifferenceFrontExtrapolatedTrackDutPositionYWithShower();
+    TH1D* hist28 = ca.DifferenceBackExtrapolatedTrackDutPositionYWithShower();
 
     gStyle->SetOptStat(0);
     auto pramary_color = TColor::GetColor("#008899");
@@ -69,22 +61,6 @@ int main(int argc, char** argv){
         hist_array2[i]->Draw("COLZ");
     }
 
-    auto* canvas3 = PlotSupporter::MakeCanvas2D("canvas3", 2, 2);
-    std::array<TH2D*, 4> hist_array3 = {hist7, hist8, hist9, hist10};
-    for(int i=0; i<4; ++i){
-        canvas3->cd(i+1);
-        PlotSupporter::SetHistStyle2D(hist_array3[i]);
-        hist_array3[i]->Draw("COLZ");
-    }
-
-    auto* canvas4 = PlotSupporter::MakeCanvas2D("canvas4", 2, 2);
-    std::array<TH2D*, 4> hist_array4 = {hist11, hist12, hist13, hist14};
-    for(int i=0; i<4; ++i){
-        canvas4->cd(i+1);
-        PlotSupporter::SetHistStyle2D(hist_array4[i]);
-        hist_array4[i]->Draw("COLZ");
-    }
-
     auto* canvas6 = PlotSupporter::MakeCanvas2D("canvas6", 2, 1);
     std::array<TH2D*, 2> hist_array6 = {hist19, hist20};
     for(int i=0; i<2; ++i){
@@ -98,6 +74,9 @@ int main(int argc, char** argv){
     for(int i=0; i<4; ++i){
         canvas7->cd(i+1);
         PlotSupporter::SetHistStyle2D(hist_array7[i]);
+        if(i == 0) hist_array7[i]->GetYaxis()->SetRangeUser(-0.4, 1.6);
+        if(i == 1) hist_array7[i]->GetYaxis()->SetRangeUser(-0.6, 1.4);
+        if(i == 3) hist_array7[i]->GetYaxis()->SetRangeUser(-0.1, 1.9);
         hist_array7[i]->Draw("COLZ");
     }
 
@@ -135,8 +114,6 @@ int main(int argc, char** argv){
 
     canvas1->SaveAs((save_dir / "strip_correlation.png").c_str());
     canvas2->SaveAs((save_dir / "strip_dut_hitmap.png").c_str());
-    canvas3->SaveAs((save_dir / "strip_dut_xcorrelation.png").c_str());
-    canvas4->SaveAs((save_dir / "strip_dut_ycorrelation.png").c_str());
     canvas6->SaveAs((save_dir / "extrapolated_track_hitmap.png").c_str());
     canvas7->SaveAs((save_dir / "dut_extrapolated_track_correlation.png").c_str());
     canvas8->SaveAs((save_dir / "difference_extrapolated_track_dut_position.png").c_str());

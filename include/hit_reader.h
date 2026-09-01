@@ -9,16 +9,23 @@
 struct HitData{
     EvtHit eh_;
 
-    TFile* file_;
+    TFile* file_ = nullptr;
     std::string filename_;
-    std::string run_number_condition_;
-    TTree* tree_;
-    Long64_t nentries_;
+    std::string run_number_;
+    std::string feature_condition_;
+    std::string tracker_condition_;
+    std::string dut_condition_;
+    TTree* tree_ = nullptr;
+    Long64_t nentries_ = 0;
+
+    std::string HitCondition() const{
+        return tracker_condition_ + "-" + dut_condition_;
+    }
 };
 
 class HitReader{
     public:
-        HitReader(char* input_path);
+        HitReader(const char* input_path);
         ~HitReader();
 
         HitData& GetHitData(){return hd_;}

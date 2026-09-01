@@ -3,12 +3,13 @@
 
 #include "./../include/hit_reader.h"
 #include "./../include/matched_hit_analyzer.h"
+#include "./../include/through_event_reader.h"
 
 #include <TH2D.h>
 
 struct CorrelationAnalyzer{
     public:
-        CorrelationAnalyzer(HitData& hd): hd_(hd){};
+        CorrelationAnalyzer(ThroughEventData& td): td_(td){};
 
         TH2D* FrontStripBackStripXCorrelation();
         TH2D* FrontStripBackStripYCorrelation();
@@ -20,22 +21,32 @@ struct CorrelationAnalyzer{
         TH2D* FrontExtrapolatedTrackHitmap();
         TH2D* BackExtrapolatedTrackHitmap();
 
-        TH2D* FrontStripFrontDutXCorrelation(int cut_n_hit_ch_front = 1);
-        TH2D* BackStripBackDutXCorrelation(int cut_n_hit_ch_back = 1);
-        TH2D* FrontStripBackDutXCorrelation(int cut_n_hit_ch_back = 1);
-        TH2D* BackStripFrontDutXCorrelation(int cut_n_hit_ch_front = 1);
-        TH2D* FrontStripFrontDutYCorrelation(int cut_n_hit_ch_front = 1);
-        TH2D* BackStripBackDutYCorrelation(int cut_n_hit_ch_back = 1);
-        TH2D* FrontStripBackDutYCorrelation(int cut_n_hit_ch_back = 1);
-        TH2D* BackStripFrontDutYCorrelation(int cut_n_hit_ch_front = 1);
+        TH2D* FrontStripFrontDutXCorrelation();
+        TH2D* BackStripBackDutXCorrelation();
+        TH2D* FrontStripBackDutXCorrelation();
+        TH2D* BackStripFrontDutXCorrelation();
+        TH2D* FrontStripFrontDutYCorrelation();
+        TH2D* BackStripBackDutYCorrelation();
+        TH2D* FrontStripBackDutYCorrelation();
+        TH2D* BackStripFrontDutYCorrelation();
 
-        TH2D* FrontExtrapolatedTrackDutPositionXCorrelation(int cut_n_hit_ch_front = 1);
-        TH2D* BackExtrapolatedTrackDutPositionXCorrelation(int cut_n_hit_ch_back = 1);
-        TH2D* FrontExtrapolatedTrackDutPositionYCorrelation(int cut_n_hit_ch_front = 1);
-        TH2D* BackExtrapolatedTrackDutPositionYCorrelation(int cut_n_hit_ch_back = 1);
+        TH2D* FrontDutPositionExtrapolatedTrackXCorrelation();
+        TH2D* BackDutPositionExtrapolatedTrackXCorrelation();
+        TH2D* FrontDutPositionExtrapolatedTrackYCorrelation();
+        TH2D* BackDutPositionExtrapolatedTrackYCorrelation();
+
+        TH1D* DifferenceFrontExtrapolatedTrackDutPositionX();
+        TH1D* DifferenceBackExtrapolatedTrackDutPositionX();
+        TH1D* DifferenceFrontExtrapolatedTrackDutPositionY();
+        TH1D* DifferenceBackExtrapolatedTrackDutPositionY();
+
+        TH1D* DifferenceFrontExtrapolatedTrackDutPositionXWithShower();
+        TH1D* DifferenceBackExtrapolatedTrackDutPositionXWithShower();
+        TH1D* DifferenceFrontExtrapolatedTrackDutPositionYWithShower();
+        TH1D* DifferenceBackExtrapolatedTrackDutPositionYWithShower();
 
     private:
-        HitData& hd_;
+        ThroughEventData& td_;
 };
 
 #endif
