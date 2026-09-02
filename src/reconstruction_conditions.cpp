@@ -204,6 +204,221 @@ std::optional<ReconstructedPixelPosition> ReconstructionConditions::ShowerFullHi
     return position;
 }
 
+std::optional<ReconstructedPixelPosition> ReconstructionConditions::Shower2HitEvtReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer){
+    if(hits.empty()) return std::nullopt;
+
+    double total_charge = 0.0;
+    double weighted_x = 0.0;
+    double weighted_y = 0.0;
+
+    if(hits.size() < 2) return std::nullopt; // Ensure there are at least 2 hits
+
+    for(const auto& hit: hits){
+        const double weight = hit.charge;
+
+        weighted_x += weight * static_cast<double>(hit.position.x);
+        weighted_y += weight * static_cast<double>(hit.position.y);
+        total_charge += weight;
+    }
+
+    if(total_charge == 0.0) return std::nullopt; // Avoid division by zero
+
+    double reconstructed_x = weighted_x / total_charge;
+    double reconstructed_y = weighted_y / total_charge;
+
+    ReconstructedPixelPosition position = CorrectPixelPosition({reconstructed_x, reconstructed_y});
+
+    const AlignmentData ad;
+
+    if(layer == PixelLayer::Front){
+        position.x -= ad.front_x;
+        position.y -= ad.front_y;
+    }else if(layer == PixelLayer::Back){
+        position.x -= ad.back_x;
+        position.y -= ad.back_y;
+    }
+
+    return position;
+}
+
+std::optional<ReconstructedPixelPosition> ReconstructionConditions::ShowerSeedReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer){
+    if(hits.empty()) return std::nullopt;
+
+    std::vector<PixelHit> sorted_hits = hits;
+
+    std::sort(sorted_hits.begin(), sorted_hits.end(), [](const PixelHit& a, const PixelHit& b) {
+        return a.charge > b.charge; // Sort in descending order of charge
+    });
+
+    const PixelHit& seed = sorted_hits[0];
+
+    double total_charge = 0.0;
+    double weighted_x = 0.0;
+    double weighted_y = 0.0;
+
+    int lgad;
+    if(layer == PixelLayer::Front){
+        lgad = 0;
+    }else if(layer == PixelLayer::Back){
+        lgad = 1;
+    }else{
+        return std::nullopt; // Invalid layer
+    }
+
+    for(int dx=-1; dx<=1; ++dx){
+        for(int dy=-1; dy<=1; ++dy){
+
+            PixelPosition neighbor_pos{seed.position.x + dx, seed.position.y + dy};
+
+            if(neighbor_pos.x < 0 || neighbor_pos.x > 3 || neighbor_pos.y < 0 || neighbor_pos.y > 3) continue;
+
+            const int diti_ch = PixelPosition2Digi(lgad, neighbor_pos);
+
+            if(std::find(dead_channels.begin(), dead_channels.end(), diti_ch) != dead_channels.end()){
+                return std::nullopt; // Found a dead channel in the 3x3 region
+            }
+        }
+    }
+
+    for(const auto& hit: sorted_hits){
+
+        const int dx = std::abs(hit.position.x - seed.position.x);
+        const int dy = std::abs(hit.position.y - seed.position.y);
+
+        if(dx > 1 || dy > 1) continue; // Only consider hits in the 3x3 region around the seed
+        
+        total_charge += hit.charge;
+        weighted_x += static_cast<double>(hit.position.x) * hit.charge;
+        weighted_y += static_cast<double>(hit.position.y) * hit.charge;
+    }
+
+    if(total_charge == 0.0) return std::nullopt; // Avoid division by zero
+
+    double reconstructed_x = weighted_x / total_charge;
+    double reconstructed_y = weighted_y / total_charge;
+
+    ReconstructedPixelPosition position = CorrectPixelPosition({reconstructed_x, reconstructed_y});
+
+
+    const AlignmentData ad;
+
+    if(layer == PixelLayer::Front){
+        position.x -= ad.front_x;
+        position.y -= ad.front_y;
+    }else if(layer == PixelLayer::Back){
+        position.x -= ad.back_x;
+        position.y -= ad.back_y;
+    }
+
+    return position;
+}
+
+std::optional<ReconstructedPixelPosition> ReconstructionConditions::ShowerSeedIncludeDeadchReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer){
+    if(hits.empty()) return std::nullopt;
+
+    std::vector<PixelHit> sorted_hits = hits;
+
+    std::sort(sorted_hits.begin(), sorted_hits.end(), [](const PixelHit& a, const PixelHit& b) {
+        return a.charge > b.charge; // Sort in descending order of charge
+    });
+
+    const PixelHit& seed = sorted_hits[0];
+
+    double total_charge = 0.0;
+    double weighted_x = 0.0;
+    double weighted_y = 0.0;
+
+    int n_hit_region = 0;
+
+    for(const auto& hit: sorted_hits){
+
+        const int dx = std::abs(hit.position.x - seed.position.x);
+        const int dy = std::abs(hit.position.y - seed.position.y);
+
+        if(dx > 1 || dy > 1) continue; // Only consider hits in the 3x3 region around the seed
+
+        ++n_hit_region;
+        
+        total_charge += hit.charge;
+        weighted_x += static_cast<double>(hit.position.x) * hit.charge;
+        weighted_y += static_cast<double>(hit.position.y) * hit.charge;
+    }
+
+    if(n_hit_region < 2) return std::nullopt; // Require at least 2 hits in the 3x3 region
+    if(total_charge == 0.0) return std::nullopt; // Avoid division by zero
+
+    double reconstructed_x = weighted_x / total_charge;
+    double reconstructed_y = weighted_y / total_charge;
+
+    ReconstructedPixelPosition position = CorrectPixelPosition({reconstructed_x, reconstructed_y});
+
+
+    const AlignmentData ad;
+
+    if(layer == PixelLayer::Front){
+        position.x -= ad.front_x;
+        position.y -= ad.front_y;
+    }else if(layer == PixelLayer::Back){
+        position.x -= ad.back_x;
+        position.y -= ad.back_y;
+    }
+
+    return position;
+}
+
+std::optional<ReconstructedPixelPosition> ReconstructionConditions::ShowerLineReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer){
+    if(hits.empty()) return std::nullopt;
+
+    std::vector<PixelHit> sorted_hits = hits;
+
+    std::sort(sorted_hits.begin(), sorted_hits.end(), [](const PixelHit& a, const PixelHit& b) {
+        return a.charge > b.charge; // Sort in descending order of charge
+    });
+
+    const PixelHit& seed = sorted_hits[0];
+
+    double total_charge_x = 0.0;
+    double total_charge_y = 0.0;
+    double weighted_x = 0.0;
+    double weighted_y = 0.0;
+
+    int n_hit_x = 0;
+    int n_hit_y = 0;
+
+    for(const auto& hit: sorted_hits){
+
+        if(hit.position.x == seed.position.x){
+            weighted_y += static_cast<double>(hit.position.y) * hit.charge;
+            total_charge_y += hit.charge;
+            ++n_hit_y;
+        }
+        if(hit.position.y == seed.position.y){
+            weighted_x += static_cast<double>(hit.position.x) * hit.charge;
+            total_charge_x += hit.charge;
+            ++n_hit_x;
+        }
+    }
+
+    if(n_hit_x < 2 || n_hit_y < 2) return std::nullopt; // Require at least 2 hits in the same row or column
+    if(total_charge_x == 0.0 || total_charge_y == 0.0) return std::nullopt; // Avoid division by zero
+
+    double reconstructed_x = weighted_x / total_charge_x;
+    double reconstructed_y = weighted_y / total_charge_y;
+
+    ReconstructedPixelPosition position = CorrectPixelPosition({reconstructed_x, reconstructed_y});
+
+    const AlignmentData ad;
+
+    if(layer == PixelLayer::Front){
+        position.x -= ad.front_x;
+        position.y -= ad.front_y;
+    }else if(layer == PixelLayer::Back){
+        position.x -= ad.back_x;
+        position.y -= ad.back_y;
+    }
+    
+    return position;
+}
 
 const ReconstructionConditions::StripReconstructionCondition ReconstructionConditions::StandardStrip{
     "Standard",
@@ -228,4 +443,24 @@ const ReconstructionConditions::PixelReconstructionCondition ReconstructionCondi
 const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::ShowerFullHit{
     "ShowerFullHit",
     ShowerFullHitReconstructionCondition
+};
+
+const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::Shower2HitEvt{
+    "Shower2HitEvt",
+    Shower2HitEvtReconstructionCondition
+};
+
+const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::ShowerSeed{
+    "ShowerSeed",
+    ShowerSeedReconstructionCondition
+};
+
+const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::ShowerSeedIncludeDeadch{
+    "ShowerSeedIncludeDeadch",
+    ShowerSeedIncludeDeadchReconstructionCondition
+};
+
+const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::ShowerLine{
+    "ShowerLine",
+    ShowerLineReconstructionCondition
 };

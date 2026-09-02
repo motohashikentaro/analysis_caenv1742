@@ -50,6 +50,10 @@ class ReconstructionConditions{
         static std::optional<ReconstructedPixelPosition> AxisNeighborChargeWeightReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
 
         static std::optional<ReconstructedPixelPosition> ShowerFullHitReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
+        static std::optional<ReconstructedPixelPosition> Shower2HitEvtReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
+        static std::optional<ReconstructedPixelPosition> ShowerSeedReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
+        static std::optional<ReconstructedPixelPosition> ShowerSeedIncludeDeadchReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
+        static std::optional<ReconstructedPixelPosition> ShowerLineReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
 
         // named conditions
         static const StripReconstructionCondition StandardStrip;
@@ -58,6 +62,11 @@ class ReconstructionConditions{
         static const PixelReconstructionCondition AdjacentChargeWeight;
         static const PixelReconstructionCondition AxisNeighborChargeWeight;
         static const PixelReconstructionCondition ShowerFullHit;
+        static const PixelReconstructionCondition Shower2HitEvt;
+        static const PixelReconstructionCondition ShowerSeed;
+        static const PixelReconstructionCondition ShowerSeedIncludeDeadch;
+        static const PixelReconstructionCondition ShowerLine;
+        
     private:
         static double CorrectStripPosition(double strip_position);
         static ReconstructedPixelPosition CorrectPixelPosition(const ReconstructedPixelPosition& pixel_position);        

@@ -53,7 +53,10 @@ APPS = \
 	   feature_summary \
 	   hit_summary \
 	   correlation_summary \
-	   shower_summary
+	   shower_summary \
+	   analysis_hitmap_per_event \
+	   analysis_-999tot \
+	   analysis_nhit_hitfile
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 

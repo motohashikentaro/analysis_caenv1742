@@ -2,6 +2,7 @@
 #include "./../include/matched_hit_analyzer.h"
 #include "./../include/hit_reader.h"
 #include "./../include/plot_supporter.h"
+#include "./../include/alignment_data.h"
 
 #include <array>
 #include <iostream>
@@ -41,6 +42,8 @@ int main(int argc, char** argv){
     TLatex* latex = new TLatex();
     latex->SetNDC();
 
+    AlignmentData alignment_data;
+
     PlotSupporter ps(tr.GetThroughEventData());
     std::filesystem::path save_dir = ps.MakeSaveDir();
 
@@ -58,6 +61,14 @@ int main(int argc, char** argv){
     for(int i=0; i<4; ++i){
         canvas2->cd(i+1);
         PlotSupporter::SetHistStyle2D(hist_array2[i]);
+        // if(i == 2){
+        //     hist_array2[i]->GetYaxis()->SetRangeUser(-2 - alignment_data.front_y, 2 - alignment_data.front_y);
+        //     hist_array2[i]->GetXaxis()->SetRangeUser(-2 - alignment_data.front_x, 2 - alignment_data.front_x);
+        // }
+        // if(i == 3){
+        //     hist_array2[i]->GetYaxis()->SetRangeUser(-2 - alignment_data.back_y, 2 - alignment_data.back_y);
+        //     hist_array2[i]->GetXaxis()->SetRangeUser(-2 - alignment_data.back_x, 2 - alignment_data.back_x);
+        // }
         hist_array2[i]->Draw("COLZ");
     }
 
@@ -74,9 +85,10 @@ int main(int argc, char** argv){
     for(int i=0; i<4; ++i){
         canvas7->cd(i+1);
         PlotSupporter::SetHistStyle2D(hist_array7[i]);
-        if(i == 0) hist_array7[i]->GetYaxis()->SetRangeUser(-0.4, 1.6);
-        if(i == 1) hist_array7[i]->GetYaxis()->SetRangeUser(-0.6, 1.4);
-        if(i == 3) hist_array7[i]->GetYaxis()->SetRangeUser(-0.1, 1.9);
+        // if(i == 0) hist_array7[i]->GetYaxis()->SetRangeUser(-2 - alignment_data.front_x, 2 - alignment_data.front_x);
+        // if(i == 1) hist_array7[i]->GetYaxis()->SetRangeUser(-2 - alignment_data.back_x, 2 - alignment_data.back_x);
+        // if(i == 2) hist_array7[i]->GetYaxis()->SetRangeUser(-2 - alignment_data.front_y, 2 - alignment_data.front_y);
+        // if(i == 3) hist_array7[i]->GetYaxis()->SetRangeUser(-2 - alignment_data.back_y, 2 - alignment_data.back_y);
         hist_array7[i]->Draw("COLZ");
     }
 

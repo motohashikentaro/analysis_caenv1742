@@ -36,6 +36,7 @@ class FeatureExtractor{
     public:
         FeatureExtractor(RootData& rd): rd_(rd){};
 
+        void FeatureExtractionCorrectThres();
         void FeatureExtraction();
         void FeatureExtractionOld();
 

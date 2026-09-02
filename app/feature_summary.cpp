@@ -194,6 +194,18 @@ int main(int argc, char* argv[]){
         latex->DrawLatex(0.65, 0.80, Form("Board %d, Ch %d", board, ch));
         latex->DrawLatex(0.65, 0.75, Form("Threshold %d ADC", target_threshold));
         latex->DrawLatex(0.65, 0.70, Form("Entries: %.0f / 200000", histograms_slope[i]->GetEntries()));
+
+        if(i == 0){
+            TLine* cut_line3 = new TLine(0, 14, 100, 14);
+            cut_line3->SetLineColor(kRed);
+            cut_line3->SetLineWidth(2);
+            cut_line3->Draw("SAME");
+
+            TLine* cut_line4 = new TLine(3.3, 0, 3.3, 100);
+            cut_line4->SetLineColor(kRed);
+            cut_line4->SetLineWidth(2);
+            cut_line4->Draw("SAME");
+        }
     }
 
     canvas_slope->Update();

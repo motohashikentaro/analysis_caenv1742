@@ -15,7 +15,7 @@ int main(int argc, char* argv[]){
         HitReader hr(argv[1]);
 
         const auto& strip_condition = ReconstructionConditions::StandardStrip;
-        const auto& pixel_condition = ReconstructionConditions::ShowerFullHit;
+        const auto& pixel_condition = ReconstructionConditions::Shower2HitEvt; // You can change this to any other pixel reconstruction condition as needed
 
         // through event extraction
         ThroughEventExtractor tee(hr.GetHitData(), strip_condition, pixel_condition);

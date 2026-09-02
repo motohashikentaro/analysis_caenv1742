@@ -40,6 +40,16 @@ std::optional<size_t> SelectionConditions::SlopeTotTrackerCondition(const EvtFea
     return std::make_optional(static_cast<size_t>(threshold_idx));
 }
 
+std::optional<size_t> SelectionConditions::CorrectThresTrackerCondition(const EvtFeature& ef){
+    constexpr size_t threshold_idx = 1;  // use threshold 40 for DUT
+
+    if(ef.peak_adc >= -ThresholdData::thresholds[threshold_idx]) return std::nullopt;    
+    if(ef.tots[threshold_idx] < 5 && -ef.raise_slopes[threshold_idx] > 30) return std::nullopt;
+    if(ef.tots[threshold_idx] < 0.0) return std::nullopt;
+    
+    return std::make_optional(static_cast<size_t>(threshold_idx));
+}
+
 
 // DUT selection conditions
 // ===============================================================================================
@@ -114,6 +124,27 @@ std::optional<size_t> SelectionConditions::SlopeTotDutCondition(const EvtFeature
     return std::make_optional(static_cast<size_t>(threshold_idx));
 }
 
+std::optional<size_t> SelectionConditions::CorrectThresDutCondition(const EvtFeature& ef){
+    constexpr size_t threshold_idx = 3;  // use threshold 20 for DUT
+
+    if(ef.peak_adc >= -ThresholdData::thresholds[threshold_idx]) return std::nullopt;    
+    if(ef.tots[threshold_idx] < 4 && -ef.raise_slopes[threshold_idx] > 30) return std::nullopt;
+    if(ef.tots[threshold_idx] < 0.0) return std::nullopt;
+    
+    return std::make_optional(static_cast<size_t>(threshold_idx));
+}
+
+std::optional<size_t> SelectionConditions::ForLast8chDutCondition(const EvtFeature& ef){
+    constexpr size_t threshold_idx = 3;
+
+    if(ef.peak_adc >= -ThresholdData::thresholds[threshold_idx]) return std::nullopt;    
+    if(ef.tots[threshold_idx] < 3.3 && -ef.raise_slopes[threshold_idx] > 14) return std::nullopt;
+    if(ef.tots[threshold_idx] < 0.0) return std::nullopt;
+    
+    return std::make_optional(static_cast<size_t>(threshold_idx));
+    
+}
+
 const SelectionConditions::SelectionCondition SelectionConditions::LinearFunctionTracker{
     "Linear", 
     LinearFunctionTrackerCondition
@@ -162,4 +193,19 @@ const SelectionConditions::SelectionCondition SelectionConditions::ForSubDut{
 const SelectionConditions::SelectionCondition SelectionConditions::SlopeTotDut{
     "SlopeTot", 
     SlopeTotDutCondition
+};
+
+const SelectionConditions::SelectionCondition SelectionConditions::CorrectThresTracker{
+    "CorrectThresTracker", 
+    CorrectThresTrackerCondition
+};
+
+const SelectionConditions::SelectionCondition SelectionConditions::CorrectThresDut{
+    "CorrectThresDut", 
+    CorrectThresDutCondition
+};
+
+const SelectionConditions::SelectionCondition SelectionConditions::ForLast8chDut{
+    "ForLast8ch",
+    ForLast8chDutCondition
 };

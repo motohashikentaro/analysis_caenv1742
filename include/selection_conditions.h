@@ -17,6 +17,7 @@ class SelectionConditions{
         static std::optional<size_t> LinearFunctionTrackerCondition(const EvtFeature& ef);
         static std::optional<size_t> CombinedFunctionTrackerCondition(const EvtFeature& ef);
         static std::optional<size_t> SlopeTotTrackerCondition(const EvtFeature& ef);
+        static std::optional<size_t> CorrectThresTrackerCondition(const EvtFeature& ef);
 
         static std::optional<size_t> StandardDutCondition(const EvtFeature& ef);
         static std::optional<size_t> StrictDutCondition(const EvtFeature& ef);
@@ -25,10 +26,13 @@ class SelectionConditions{
         static std::optional<size_t> CombinedFunctionDutCondition(const EvtFeature& ef);
         static std::optional<size_t> ForSubDutCondition(const EvtFeature& ef);
         static std::optional<size_t> SlopeTotDutCondition(const EvtFeature& ef);
+        static std::optional<size_t> CorrectThresDutCondition(const EvtFeature& ef);
+        static std::optional<size_t> ForLast8chDutCondition(const EvtFeature& ef);
 
         static const SelectionCondition LinearFunctionTracker;
         static const SelectionCondition CombinedFunctionTracker;
         static const SelectionCondition SlopeTotTracker;
+        static const SelectionCondition CorrectThresTracker;
 
         static const SelectionCondition StandardDut;
         static const SelectionCondition StrictDut;
@@ -37,6 +41,8 @@ class SelectionConditions{
         static const SelectionCondition CombinedFunctionDut;
         static const SelectionCondition ForSubDut;
         static const SelectionCondition SlopeTotDut;
+        static const SelectionCondition CorrectThresDut;
+        static const SelectionCondition ForLast8chDut;
 };  
 
 #endif

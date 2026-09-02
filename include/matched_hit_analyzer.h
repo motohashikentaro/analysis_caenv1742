@@ -35,6 +35,7 @@ struct MatchedHitAnalyzer{
         ReconstructedPixelPosition CorrectPixelPosition(const ReconstructedPixelPosition& pixel_position);
 
         std::optional<ReconstructedHitPosition> Reconstruct(const std::vector<EvtHit>& hits);
+        std::optional<ReconstructedHitPosition> StripReconstruct(const std::vector<EvtHit>& hits);
 
         template<typename Func>
         void EventLoop(Func process){

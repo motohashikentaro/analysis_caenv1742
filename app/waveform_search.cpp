@@ -18,10 +18,10 @@
 #include <TAxis.h>
 
 int main(int argc, char* argv[]){
-    if(argc != 5){
-        std::cerr << "Usage: " << argv[0] << " <raw_root_file> <feature_file>" << std::endl;
-        return 1;
-    }
+    // if(argc != 6){
+    //     std::cerr << "Usage: " << argv[0] << " <raw_root_file> <feature_file>" << std::endl;
+    //     return 1;
+    // }
     
     RootfileReader rfr(argv[1]);
     RootfileAnalyzer rfa(rfr.GetRootData());
@@ -31,6 +31,7 @@ int main(int argc, char* argv[]){
 
     int board = std::stoi(argv[3]);  // Assuming the board number is passed as the third argument
     int ch = std::stoi(argv[4]);  // Assuming the channel number is passed as the fourth argument
+    // int target = std::stoi(argv[5]);  // Assuming the target number is passed as the fifth argument
     constexpr size_t max_events = 20;
     constexpr int range_start = 110;
     constexpr int range_end = 220;
@@ -43,8 +44,8 @@ int main(int argc, char* argv[]){
         const double tot = ef.tots[threshold_idx];
         const double charge = ef.charges[threshold_idx];
 
-        if(peak_adc < 60 || peak_adc > 70) return false;
-        if(tot < 3 || tot > 5) return false;
+        if(peak_adc < 50 || peak_adc > 60) return false;
+        if(tot < 1.5 || tot > 2.5) return false;
         // if(peak_adc < 60 || peak_adc > 75) return false;
         // if(charge < 40 || charge > 100) return false;
         // if(peak_adc < 60 || peak_adc > 80) return false;
@@ -52,6 +53,10 @@ int main(int argc, char* argv[]){
 
         return true;
     });
+
+    // std::vector<Long64_t> target_events = fa.SelectEvents(board, ch, 1, [target](const EvtFeature& ef){
+    //     return ef.evt == target;
+    // });
 
     std::vector<TGraph*> graphs = rfa.Waveform(board, ch, target_events, range_start, range_end);
 

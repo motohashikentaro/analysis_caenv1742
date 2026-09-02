@@ -19,8 +19,8 @@ int main(int argc, char* argv[]){
     FeatureReader fr(argv[1]);
     HitExtractor he(fr.GetFeatureData());
 
-    const auto& tracker_condition = SelectionConditions::SlopeTotTracker;
-    const auto& dut_condition = SelectionConditions::SlopeTotDut;
+    const auto& tracker_condition = SelectionConditions::CorrectThresTracker;
+    const auto& dut_condition = SelectionConditions::ForLast8chDut;
 
     he.HitExtraction(tracker_condition, dut_condition);
 

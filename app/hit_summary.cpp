@@ -48,6 +48,7 @@ int main(int argc, char* argv[]){
         PlotSupporter::SetHistStyle1D(histograms[i]);
         if(i == 2) histograms[i]->GetXaxis()->SetRangeUser(1, 1000);
         if(i == 3) histograms[i]->GetXaxis()->SetRangeUser(1, 15);
+        histograms[i]->GetYaxis()->SetRangeUser(0, 1000);
         histograms[i]->Draw("HIST");
         latex->DrawLatex(0.50, 0.80, Form("Run %s", (hr.GetHitData()).run_number_.c_str()));
         latex->DrawLatex(0.50, 0.77, Form("Board %d, Ch %d", board, ch));

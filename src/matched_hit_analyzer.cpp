@@ -96,3 +96,47 @@ std::optional<ReconstructedHitPosition> MatchedHitAnalyzer::Reconstruct(const st
 
     return rhe;
 }
+
+std::optional<ReconstructedHitPosition> MatchedHitAnalyzer::StripReconstruct(const std::vector<EvtHit>& hits){
+    if(!Is4Through(hits)) return std::nullopt;
+
+    std::array<std::vector<StripHit>, 4> layer_hits;
+
+    for(const auto& hit: hits){
+        if(hit.board == 0){
+            const StripPosition pos = Digi2CorrectStripPosition(hit.ch);
+
+            if(pos.layer < 0 || pos.layer >= 4) continue;
+
+            layer_hits[pos.layer].push_back({
+                static_cast<double>(pos.strip),
+                hit.charge
+            });
+        }
+    }
+
+    const auto strip_position_front_x = strip_condition_.condition(layer_hits[0]);
+    const auto strip_position_front_y = strip_condition_.condition(layer_hits[1]);
+    const auto strip_position_back_x = strip_condition_.condition(layer_hits[2]);
+    const auto strip_position_back_y = strip_condition_.condition(layer_hits[3]);
+
+    if(!strip_position_front_x || 
+       !strip_position_front_y ||
+       !strip_position_back_x ||
+       !strip_position_back_y){
+        return std::nullopt; // Invalid reconstruction
+    }
+
+    const ReconstructedHitPosition rhe = {
+        .strip_position_front_x = *strip_position_front_x,
+        .strip_position_front_y = *strip_position_front_y,
+        .strip_position_back_x = *strip_position_back_x,
+        .strip_position_back_y = *strip_position_back_y,
+        .dut_position_front = {-999.0, -999.0},
+        .dut_position_back = {-999.0, -999.0},
+        .n_hit_ch_front = 0,
+        .n_hit_ch_back = 0
+    };
+
+    return rhe;
+}
