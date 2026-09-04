@@ -28,7 +28,7 @@ ReconstructedPixelPosition ReconstructionConditions::CorrectPixelPosition(
 }
 
 // strip
-std::optional<double> ReconstructionConditions::StandardStripReconstructionCondition(const std::vector<StripHit>& hits){
+std::optional<double> ReconstructionConditions::StandardStripReconstructionCondition(const std::vector<StripHit>& hits, StripLayer layer){
     if(hits.size() < 2) return std::nullopt;
     // leading ch: max charge
     std::vector<StripHit> sorted_hits = hits;
@@ -48,6 +48,59 @@ std::optional<double> ReconstructionConditions::StandardStripReconstructionCondi
 
     return CorrectStripPosition(reconstructed_position);
 }
+
+std::optional<double> ReconstructionConditions::StripAlignmentedReconstructionCondition(const std::vector<StripHit>& hits, StripLayer layer){
+    if(hits.size() < 2) return std::nullopt;
+
+    std::vector<StripHit> sorted_hits = hits;
+
+    std::sort(
+        sorted_hits.begin(),
+        sorted_hits.end(),
+        [](const StripHit& a, const StripHit& b){
+            return a.charge > b.charge;
+        }
+    );
+
+    const StripHit& leading = sorted_hits[0];
+    const StripHit& subleading = sorted_hits[1];
+
+    if(std::abs(leading.position - subleading.position) != 1.0)
+        return std::nullopt;
+
+    const double total_charge =
+        leading.charge + subleading.charge;
+
+    if(total_charge == 0.0)
+        return std::nullopt;
+
+    const double reconstructed_position =
+        (
+            leading.position * leading.charge
+            + subleading.position * subleading.charge
+        ) / total_charge;
+
+    double position =
+        CorrectStripPosition(reconstructed_position);
+
+    const AlignmentStripData ad;
+
+    switch(layer){
+        case StripLayer::FrontX:
+        case StripLayer::FrontY:
+            break;
+
+        case StripLayer::BackX:
+            position -= ad.x;
+            break;
+
+        case StripLayer::BackY:
+            position -= ad.y;
+            break;
+    }
+
+    return position;
+}    
 
 // pixel
 // ---------------------------------------------------------------------------------------------------
@@ -167,6 +220,15 @@ std::optional<ReconstructedPixelPosition> ReconstructionConditions::AxisNeighbor
         }
     }
     return CorrectPixelPosition(ReconstructedPixelPosition{reconstructed_x, reconstructed_y});
+}
+
+std::optional<ReconstructedPixelPosition> ReconstructionConditions::SingleHitReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer){
+    if(hits.empty()) return std::nullopt;
+
+    if(hits.size() > 1) return std::nullopt; // Only consider single hit events
+
+    const PixelHit& leading = hits[0];
+    return CorrectPixelPosition(ReconstructedPixelPosition{static_cast<double>(leading.position.x), static_cast<double>(leading.position.y)});
 }
 
 std::optional<ReconstructedPixelPosition> ReconstructionConditions::ShowerFullHitReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer){
@@ -420,9 +482,51 @@ std::optional<ReconstructedPixelPosition> ReconstructionConditions::ShowerLineRe
     return position;
 }
 
+std::optional<ReconstructedPixelPosition> ReconstructionConditions::Shower2HitIncludeStripAlignmentReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer){
+    if(hits.empty()) return std::nullopt;
+
+    double total_charge = 0.0;
+    double weighted_x = 0.0;
+    double weighted_y = 0.0;
+
+    if(hits.size() < 2) return std::nullopt; // Ensure there are at least 2 hits
+
+    for(const auto& hit: hits){
+        const double weight = hit.charge;
+
+        weighted_x += weight * static_cast<double>(hit.position.x);
+        weighted_y += weight * static_cast<double>(hit.position.y);
+        total_charge += weight;
+    }
+
+    if(total_charge == 0.0) return std::nullopt; // Avoid division by zero
+
+    double reconstructed_x = weighted_x / total_charge;
+    double reconstructed_y = weighted_y / total_charge;
+
+    ReconstructedPixelPosition position = CorrectPixelPosition({reconstructed_x, reconstructed_y});
+
+    const AlignmentIncludeStripData ad;
+
+    if(layer == PixelLayer::Front){
+        position.x -= ad.front_x;
+        position.y -= ad.front_y;
+    }else if(layer == PixelLayer::Back){
+        position.x -= ad.back_x;
+        position.y -= ad.back_y;
+    }
+
+    return position;
+}
+
 const ReconstructionConditions::StripReconstructionCondition ReconstructionConditions::StandardStrip{
     "Standard",
     StandardStripReconstructionCondition
+};
+
+const ReconstructionConditions::StripReconstructionCondition ReconstructionConditions::StripAlignmented{
+    "StripAlignmented",
+    StripAlignmentedReconstructionCondition
 };
 
 const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::Top3ChargeWeight{
@@ -438,6 +542,11 @@ const ReconstructionConditions::PixelReconstructionCondition ReconstructionCondi
 const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::AxisNeighborChargeWeight{
     "AxisNeighborChargeWeight",
     AxisNeighborChargeWeightReconstructionCondition
+};
+
+const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::SingleHit{
+    "SingleHit",
+    SingleHitReconstructionCondition
 };
 
 const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::ShowerFullHit{
@@ -463,4 +572,9 @@ const ReconstructionConditions::PixelReconstructionCondition ReconstructionCondi
 const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::ShowerLine{
     "ShowerLine",
     ShowerLineReconstructionCondition
+};
+
+const ReconstructionConditions::PixelReconstructionCondition ReconstructionConditions::Shower2HitIncludeStripAlignment{
+    "Shower2HitIncludeStripAlignment",
+    Shower2HitIncludeStripAlignmentReconstructionCondition
 };

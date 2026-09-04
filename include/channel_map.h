@@ -1,6 +1,8 @@
 #ifndef CHANNEL_MAP
 #define CHANNEL_MAP
 
+#include <array>
+
 struct PixelPosition{
     int x;
     int y;

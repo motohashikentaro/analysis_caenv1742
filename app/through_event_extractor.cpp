@@ -14,8 +14,8 @@ int main(int argc, char* argv[]){
     try{
         HitReader hr(argv[1]);
 
-        const auto& strip_condition = ReconstructionConditions::StandardStrip;
-        const auto& pixel_condition = ReconstructionConditions::Shower2HitEvt; // You can change this to any other pixel reconstruction condition as needed
+        const auto& strip_condition = ReconstructionConditions::StripAlignmented; // You can change this to any other strip reconstruction condition as needed
+        const auto& pixel_condition = ReconstructionConditions::Shower2HitIncludeStripAlignment; // You can change this to any other pixel reconstruction condition as needed
 
         // through event extraction
         ThroughEventExtractor tee(hr.GetHitData(), strip_condition, pixel_condition);

@@ -20,7 +20,7 @@ int main(int argc, char* argv[]){
     HitExtractor he(fr.GetFeatureData());
 
     const auto& tracker_condition = SelectionConditions::CorrectThresTracker;
-    const auto& dut_condition = SelectionConditions::ForLast8chDut;
+    const auto& dut_condition = SelectionConditions::CorrectThresDut;
 
     he.HitExtraction(tracker_condition, dut_condition);
 

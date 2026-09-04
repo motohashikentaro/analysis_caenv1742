@@ -67,10 +67,10 @@ std::optional<ReconstructedHitPosition> MatchedHitAnalyzer::Reconstruct(const st
         }
     }
 
-    const auto strip_position_front_x = strip_condition_.condition(layer_hits[0]);
-    const auto strip_position_front_y = strip_condition_.condition(layer_hits[1]);
-    const auto strip_position_back_x = strip_condition_.condition(layer_hits[2]);
-    const auto strip_position_back_y = strip_condition_.condition(layer_hits[3]);
+    const auto strip_position_front_x = strip_condition_.condition(layer_hits[0], StripLayer::FrontX);
+    const auto strip_position_front_y = strip_condition_.condition(layer_hits[1], StripLayer::FrontY);
+    const auto strip_position_back_x = strip_condition_.condition(layer_hits[2], StripLayer::BackX);
+    const auto strip_position_back_y = strip_condition_.condition(layer_hits[3], StripLayer::BackY);
     const auto dut_position_front = pixel_condition_.condition(pixel_hits[0], PixelLayer::Front);
     const auto dut_position_back = pixel_condition_.condition(pixel_hits[1], PixelLayer::Back);
 
@@ -115,10 +115,10 @@ std::optional<ReconstructedHitPosition> MatchedHitAnalyzer::StripReconstruct(con
         }
     }
 
-    const auto strip_position_front_x = strip_condition_.condition(layer_hits[0]);
-    const auto strip_position_front_y = strip_condition_.condition(layer_hits[1]);
-    const auto strip_position_back_x = strip_condition_.condition(layer_hits[2]);
-    const auto strip_position_back_y = strip_condition_.condition(layer_hits[3]);
+    const auto strip_position_front_x = strip_condition_.condition(layer_hits[0], StripLayer::FrontX);
+    const auto strip_position_front_y = strip_condition_.condition(layer_hits[1], StripLayer::FrontY);
+    const auto strip_position_back_x = strip_condition_.condition(layer_hits[2], StripLayer::BackX);
+    const auto strip_position_back_y = strip_condition_.condition(layer_hits[3], StripLayer::BackY);
 
     if(!strip_position_front_x || 
        !strip_position_front_y ||

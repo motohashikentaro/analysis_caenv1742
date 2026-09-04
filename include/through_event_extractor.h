@@ -35,6 +35,7 @@ class ThroughEventExtractor{
             hd_(hd), strip_condition_(strip_condition), pixel_condition_(pixel_condition){};
 
         void ThroughEventExtraction();
+        void ThroughStripEventExtraction();
 
     private:
         HitData& hd_;

@@ -14,6 +14,8 @@
 #include <TF1.h>
 #include <TLine.h>
 
+
+
 int main(int argc, char* argv[]){
     if(argc != 5 && argc != 6){
         std::cerr << "Usage: " << argv[0] << " <input_root_file> <board> <ch> <target_threshold> [<cut_line>]" << std::endl;
@@ -211,50 +213,6 @@ int main(int argc, char* argv[]){
     canvas_slope->Update();
     std::string filename_slope = "feature_summary_slope_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + ".png";
     canvas_slope->SaveAs((save_dir / filename_slope).string().c_str());
-
-
-    // for slide
-    auto* canvas_slide = PlotSupporter::MakeCanvas2D("canvas_slide", 3, 1);
-    std::array<TH2D*, 3> histograms_slide = {hist4, hist6, hist12};
-    for(size_t i = 0; i < histograms_slide.size(); ++i){
-        canvas_slide->cd(i + 1);
-        PlotSupporter::SetHistStyle2D(histograms_slide[i]);
-        if(i == 0){
-            histograms_slide[i]->GetXaxis()->SetRangeUser(0, 400);
-            histograms_slide[i]->GetYaxis()->SetRangeUser(0, 1000);
-        }
-        if(i == 1){
-            histograms_slide[i]->GetXaxis()->SetRangeUser(0, 400);
-            histograms_slide[i]->GetYaxis()->SetRangeUser(0, 15);
-        }
-        if(i == 2){
-            histograms_slide[i]->GetXaxis()->SetRangeUser(0, 15);
-            histograms_slide[i]->GetYaxis()->SetRangeUser(0, 80);
-
-        }
-        histograms_slide[i]->Draw("COLZ");
-        latex->DrawLatex(0.65, 0.85, Form("Run %s", (fr.GetFeatureData()).run_number_.c_str()));
-        latex->DrawLatex(0.65, 0.80, Form("Board %d, Ch %d", board, ch));
-        latex->DrawLatex(0.65, 0.75, Form("Threshold %d ADC", target_threshold));
-        latex->DrawLatex(0.65, 0.70, Form("Entries: %.0f / 200000", histograms_slide[i]->GetEntries()));
-        latex->DrawLatex(0.65, 0.65, Form("2 GeV, without W plate"));
-
-        if(i == 2){
-            TLine* cut_line5 = new TLine(0, 30, 15, 30);
-            cut_line5->SetLineColor(kRed);
-            cut_line5->SetLineWidth(2);
-            cut_line5->Draw("SAME");
-
-            TLine* cut_line6 = new TLine(4, 0, 4, 80);
-            cut_line6->SetLineColor(kRed);
-            cut_line6->SetLineWidth(2);
-            cut_line6->Draw("SAME");
-        }
-    }
-
-    canvas_slide->Update();
-    std::string filename_slide = "feature_summary_slide_board_" + std::to_string(board) + "_ch_" + std::to_string(ch) + "_threshold_" + std::to_string(target_threshold) + ".png";
-    canvas_slide->SaveAs((save_dir / filename_slide).string().c_str());
 
     return 0;
 }

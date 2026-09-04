@@ -145,6 +145,10 @@ std::optional<size_t> SelectionConditions::ForLast8chDutCondition(const EvtFeatu
     
 }
 
+std::optional<size_t> SelectionConditions::RejectAllDutCondition(const EvtFeature& ef){
+    return std::nullopt;
+}
+
 const SelectionConditions::SelectionCondition SelectionConditions::LinearFunctionTracker{
     "Linear", 
     LinearFunctionTrackerCondition
@@ -208,4 +212,9 @@ const SelectionConditions::SelectionCondition SelectionConditions::CorrectThresD
 const SelectionConditions::SelectionCondition SelectionConditions::ForLast8chDut{
     "ForLast8ch",
     ForLast8chDutCondition
+};
+
+const SelectionConditions::SelectionCondition SelectionConditions::RejectAllDut{
+    "RejectAll",
+    RejectAllDutCondition
 };

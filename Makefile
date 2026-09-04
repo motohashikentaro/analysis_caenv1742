@@ -56,7 +56,10 @@ APPS = \
 	   shower_summary \
 	   analysis_hitmap_per_event \
 	   analysis_-999tot \
-	   analysis_nhit_hitfile
+	   analysis_nhit_hitfile \
+	   analysis_strip_correlation \
+	   waveform \
+	   analysis_strip_cor_slide
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 

@@ -103,21 +103,40 @@ int main(int argc, char** argv){
 
     auto* canvas8 = PlotSupporter::MakeCanvas1D("canvas8", 2, 2);
     std::array<TH1D*, 4> hist_array8 = {hist25, hist26, hist27, hist28};
+
+    std::array<std::pair<double, double>, 4> fit_ranges = {{
+        {-1.5,  -0.8},   // hist25
+        {-1,  0},   // hist26
+        {-1.3,  -0.7},   // hist27
+        {-1.8,  -1.1}    // hist28
+    }};
+
     for(int i=0; i<4; ++i){
         canvas8->cd(i+1);
+
         PlotSupporter::SetHistStyle1D(hist_array8[i]);
+
+        const auto [xmin, xmax] = fit_ranges[i];
+
+        hist_array8[i]->Fit("gaus", "0Q", "", xmin, xmax);
         hist_array8[i]->Draw("HIST");
-        
+
         TF1* fit = hist_array8[i]->GetFunction("gaus");
+
         if(fit){
             const double mean = fit->GetParameter(1);
             const double sigma = fit->GetParameter(2);
+
             fit->Draw("SAME");
+
             latex->DrawLatexNDC(0.6, 0.8, Form("#mu = %.3f", mean));
             latex->DrawLatexNDC(0.6, 0.7, Form("#sigma = %.3f", sigma));
-            
 
-            std::cout << hist_array8[i]->GetName() << " mean: " << mean << ", sigma: " << sigma << std::endl;
+            std::cout
+                << hist_array8[i]->GetName()
+                << " mean: " << mean
+                << ", sigma: " << sigma
+                << std::endl;
         }
     }
 

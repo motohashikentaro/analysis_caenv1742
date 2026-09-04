@@ -6,6 +6,7 @@
 #include "./../include/tracker.h"
 #include "./../include/through_event_extractor.h"
 #include "./../include/through_event_reader.h"
+#include "./../include/alignment_data.h"
 
 #include <vector>
 #include <array>
@@ -47,6 +48,7 @@ TH2D* CorrelationAnalyzer::BackStripHitmap(){
 }
 
 TH2D* CorrelationAnalyzer::FrontDutHitmap(){
+    AlignmentData alignment_data;
     TH2D* hist = new TH2D(Form("front_dut_hitmap_%p", this), ";Front DUT X[mm];Front DUT Y[mm]", 32, -2, 2, 32, -2, 2);
 
     td_.tree_->Draw(Form("dut_position_front_y:dut_position_front_x>>%s", hist->GetName()), "", "colz");
@@ -55,6 +57,7 @@ TH2D* CorrelationAnalyzer::FrontDutHitmap(){
 }
 
 TH2D* CorrelationAnalyzer::BackDutHitmap(){
+    AlignmentData alignment_data;
     TH2D* hist = new TH2D(Form("back_dut_hitmap_%p", this), ";Back DUT X[mm];Back DUT Y[mm]", 32, -2, 2, 32, -2, 2);
 
     td_.tree_->Draw(Form("dut_position_back_y:dut_position_back_x>>%s", hist->GetName()), "", "colz");
