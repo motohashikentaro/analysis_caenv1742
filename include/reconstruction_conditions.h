@@ -32,6 +32,7 @@ struct ReconstructedPixelPosition{
 struct PixelHit{
     PixelPosition position;
     double charge;
+    double peak_adc;
 };
 
 class ReconstructionConditions{
@@ -51,6 +52,7 @@ class ReconstructionConditions{
         // strip
         static std::optional<double> StandardStripReconstructionCondition(const std::vector<StripHit>& hits, StripLayer layer);
         static std::optional<double> StripAlignmentedReconstructionCondition(const std::vector<StripHit>& hits, StripLayer layer);
+        static std::optional<double> NewAlignmentStripReconstructionCondition(const std::vector<StripHit>& hits, StripLayer layer);
 
         // pixel
         static std::optional<ReconstructedPixelPosition> Top3ChargeWeightReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
@@ -64,10 +66,13 @@ class ReconstructionConditions{
         static std::optional<ReconstructedPixelPosition> ShowerSeedIncludeDeadchReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
         static std::optional<ReconstructedPixelPosition> ShowerLineReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
         static std::optional<ReconstructedPixelPosition> Shower2HitIncludeStripAlignmentReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
+        static std::optional<ReconstructedPixelPosition> Shower2HitNewAlignmentReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
+        static std::optional<ReconstructedPixelPosition> Shower2HitAdcWeightNewAlignmentReconstructionCondition(const std::vector<PixelHit>& hits, PixelLayer layer);
 
         // named conditions
         static const StripReconstructionCondition StandardStrip;
         static const StripReconstructionCondition StripAlignmented;
+        static const StripReconstructionCondition NewAlignmentStrip;
         
         static const PixelReconstructionCondition Top3ChargeWeight;
         static const PixelReconstructionCondition AdjacentChargeWeight;
@@ -80,6 +85,8 @@ class ReconstructionConditions{
         static const PixelReconstructionCondition ShowerSeedIncludeDeadch;
         static const PixelReconstructionCondition ShowerLine;
         static const PixelReconstructionCondition Shower2HitIncludeStripAlignment;
+        static const PixelReconstructionCondition Shower2HitNewAlignment;
+        static const PixelReconstructionCondition Shower2HitAdcWeightNewAlignment;
         
     private:
         static double CorrectStripPosition(double strip_position);

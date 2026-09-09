@@ -92,6 +92,15 @@ inline int PixelPosition2Digi(int lgad, const PixelPosition& pos){
     return -1;
 }
 
+inline int PixelCh2Pad(int lgad, int ch){
+    if(lgad < 0 || lgad > 1) return -1;
+    if(ch < 0 || ch >= 16) return -1;
+
+    const PixelPosition& pos = kChannelMap[lgad][ch];
+
+    return (3 - pos.y) * 4 + pos.x + 1;
+}
+
 struct StripPosition{
     int layer;
     int strip;

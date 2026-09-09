@@ -59,7 +59,14 @@ APPS = \
 	   analysis_nhit_hitfile \
 	   analysis_strip_correlation \
 	   waveform \
-	   analysis_strip_cor_slide
+	   analysis_strip_cor_slide \
+	   analysis_adc_plot_per_event \
+	   analysis_adc_plot_per_ch \
+	   analysis_double_gaussian_fit \
+	   analysis_nleading \
+	   analysis_difference_per_nlead \
+	   analysis_double_gaussian_fit_limit \
+	   analysis_alignment 
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 

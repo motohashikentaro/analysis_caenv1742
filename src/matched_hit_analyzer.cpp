@@ -63,7 +63,7 @@ std::optional<ReconstructedHitPosition> MatchedHitAnalyzer::Reconstruct(const st
             if(lgad < 0 || lgad >= 2) continue;
             if(pos.x < 0 || pos.y < 0) continue;
 
-            pixel_hits[lgad].push_back({pos, hit.charge});
+            pixel_hits[lgad].push_back({pos, hit.charge, hit.peak_adc});
         }
     }
 

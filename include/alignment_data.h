@@ -20,4 +20,16 @@ struct AlignmentIncludeStripData{
     double back_y = -1.486;
 };
 
+struct NewAlignmentStripData{
+    double x = -0.83;
+    double y = -1.44;
+};
+
+struct NewAlignmentDutData{
+    double front_x = -2.41;
+    double front_y = -3.01;
+    double back_x = -2.24;
+    double back_y = -3.42;
+};
+
 #endif // ALIGNMENT_DATA

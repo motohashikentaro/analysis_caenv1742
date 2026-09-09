@@ -21,9 +21,16 @@ int main(){
     TH1D* x_correlation_hist = new TH1D("x_correlation_hist", "X Correlation Histogram", 32, -2, 2);
     TH1D* y_correlation_hist = new TH1D("y_correlation_hist", "Y Correlation Histogram", 32, -2, 2);
 
+    TH2D* x_y_correlation_hist = new TH2D("x_y_correlation_hist", ";Front Strip X[mm];Back Strip X[mm]", 32, -2, 2, 32, -2, 2);
+
     td2forx.tree_->Draw("strip_position_front_x - strip_position_back_x>>x_correlation_hist", "strip_position_front_x >= -1 && strip_position_front_x <= 1", "");
     td5fory.tree_->Draw("strip_position_front_y - strip_position_back_y>>y_correlation_hist", "", "");
 
+    td2forx.tree_->Draw(
+        "strip_position_back_x:strip_position_front_x>>x_y_correlation_hist",
+        "strip_position_front_x >= -1 && strip_position_front_x <= 1",
+        "colz"
+    );
     x_correlation_hist->SetTitle(
         ";x_{front} - x_{back} [mm];Entries"
     );
@@ -38,6 +45,7 @@ int main(){
 
     x_correlation_hist->SetLineWidth(0);
     y_correlation_hist->SetLineWidth(0);
+    gStyle->SetPalette(kViridis);
 
     TF1* fit_x = new TF1("fit_x", "gaus", -1.2, 0.3);
     x_correlation_hist->Fit(fit_x, "R");
@@ -73,4 +81,9 @@ int main(){
     latex_y.DrawLatexNDC(0.6, 0.8, Form("#mu = %.3f", mean_y));
     latex_y.DrawLatexNDC(0.6, 0.7, Form("#sigma = %.3f", sigma_y));
     canvas_y->SaveAs((ps2.MakeSaveDir() / "y_correlation_hist.png").string().c_str());
+
+    TCanvas* canvas_xy = PlotSupporter::MakeCanvas2D("x_y_correlation_canvas", 1, 1);
+    canvas_xy->cd();
+    x_y_correlation_hist->Draw("colz");
+    canvas_xy->SaveAs((ps2.MakeSaveDir() / "x_y_correlation_hist.png").string().c_str());
 }
