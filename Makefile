@@ -66,7 +66,12 @@ APPS = \
 	   analysis_nleading \
 	   analysis_difference_per_nlead \
 	   analysis_double_gaussian_fit_limit \
-	   analysis_alignment 
+	   analysis_alignment \
+	   analysis_sumcharge \
+	   root2pdf \
+	   analysis_for_meeting_cor \
+	   analysis_for_meeting_dif \
+	   analysis_for_meeting_sigma
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 
