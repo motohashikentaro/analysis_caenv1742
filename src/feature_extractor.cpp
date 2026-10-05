@@ -145,19 +145,19 @@ void FeatureExtractor::FeatureExtractionCorrectThres(){
                     int idx_end = static_cast<int>(std::floor(end));
                     // start edge charge
                     double w_start = idx_start - start;
-                    double h_start_edge = 0.0;
-                    double h_start_idx = (-thres) - (rd_.ev_.amp[board][ch][idx_start] - ef.pedestal);
+                    double h_start_edge = thres;
+                    double h_start_idx = - (rd_.ev_.amp[board][ch][idx_start] - ef.pedestal);
                     charge = charge + (w_start*(h_start_edge + h_start_idx) / 2.0);
                     // middle charge
                     for(int sample=idx_start; sample<idx_end; sample++){
-                        double h1 = (-thres) - (rd_.ev_.amp[board][ch][sample] - ef.pedestal);
-                        double h2 = (-thres) - (rd_.ev_.amp[board][ch][sample + 1] - ef.pedestal);
+                        double h1 = - (rd_.ev_.amp[board][ch][sample] - ef.pedestal);
+                        double h2 = - (rd_.ev_.amp[board][ch][sample + 1] - ef.pedestal);
                         charge = charge + ((h1 + h2) / 2.0);
                     }
                     // end edge charge
                     double w_end = end - idx_end;
-                    double h_end_edge = 0.0;
-                    double h_end_idx = (-thres) - (rd_.ev_.amp[board][ch][idx_end] - ef.pedestal);
+                    double h_end_edge = thres;
+                    double h_end_idx = - (rd_.ev_.amp[board][ch][idx_end] - ef.pedestal);
                     charge = charge + (w_end*(h_end_edge + h_end_idx) / 2.0);
                     
                     ef.charges[ithres] = charge;
