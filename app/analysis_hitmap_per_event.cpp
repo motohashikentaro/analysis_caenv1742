@@ -52,7 +52,7 @@ int main(int argc, char* argv[]){
     for(Long64_t i=0; i<hd.nentries_; ++i){
         hd.tree_->GetEntry(i);
 
-        if(!through_event_set.contains(hd_evt)) continue;
+        if(through_event_set.find(hd_evt) == through_event_set.end()) continue;
 
         if(previous_evt == -1){
             front_hitmap = new TH2D(Form("front_evt_%lld", hd_evt), Form("Front Hitmap for Event %lld", hd_evt), 4, 0, 4, 4, 0, 4);

@@ -156,8 +156,8 @@ int main(int argc, char* argv[])
 
     for(const auto& layer : layers){
 
-        if(!data1.sigma_data.contains(layer) ||
-           !data2.sigma_data.contains(layer)){
+        if(data1.sigma_data.find(layer) == data1.sigma_data.end() ||
+   data2.sigma_data.find(layer) == data2.sigma_data.end()){
 
             std::cerr
                 << "Missing layer: "

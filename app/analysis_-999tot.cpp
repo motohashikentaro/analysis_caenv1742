@@ -74,7 +74,7 @@ int main(int argc, char* argv[]){
         fd.tree_->GetEntry(i);
 
         // 6層貫通イベントでなければ無視
-        if(!through_events.contains(fd_evt)){
+        if(through_events.find(fd_evt) == through_events.end()){
             continue;
         }
 
