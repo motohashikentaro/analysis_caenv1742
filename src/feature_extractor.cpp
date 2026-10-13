@@ -13,7 +13,7 @@
 #include <TTree.h>
 #include <TNamed.h>
 
-void FeatureExtractor::FeatureExtractionCorrectThres(){
+void FeatureExtractor::FeatureExtractionCorrectCharge(){
     constexpr int kskipsample=10;
     constexpr int kpedestalcalc=50;
     constexpr int peak_search_start=110;
