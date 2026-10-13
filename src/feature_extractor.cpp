@@ -19,7 +19,7 @@ void FeatureExtractor::FeatureExtractionCorrectCharge(){
     constexpr int peak_search_start=110;
     constexpr int peak_search_end=220;
 
-    constexpr const char* feature_condition = "correct_threshold";
+    constexpr const char* feature_condition = "correct_charge";
 
     EvtFeature ef;
 
