@@ -1,0 +1,9 @@
+#!/bin/bash
+
+for file in ../data/feature/feature_*.root
+do
+    ../bin/hit_extractor "$file"
+
+    echo "Hit extraction completed for $file"
+
+done
