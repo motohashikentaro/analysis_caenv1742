@@ -71,7 +71,8 @@ APPS = \
 	   root2pdf \
 	   analysis_for_meeting_cor \
 	   analysis_for_meeting_dif \
-	   analysis_for_meeting_sigma
+	   analysis_for_meeting_sigma \
+	   analysis_allrun_extra_data
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 
