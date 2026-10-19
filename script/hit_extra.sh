@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for file in ../data/feature/feature_*.root
+for file in ../data/feature/correct_charge/feature_*.root
 do
     ../bin/hit_extractor "$file"
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-for file in ../data/hit/hit_*.root
+for file in ../data/hit/correct_charge/CorrectThresTracker-CorrectThresDut/hit_*.root
 do
     ../bin/through_event_extractor "$file"
 
