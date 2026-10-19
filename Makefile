@@ -72,7 +72,8 @@ APPS = \
 	   analysis_for_meeting_cor \
 	   analysis_for_meeting_dif \
 	   analysis_for_meeting_sigma \
-	   analysis_allrun_extra_data
+	   analysis_allrun_extra_data \
+	   analysis_energy_dependence 
 
 TARGETS = $(addprefix $(BIN_DIR)/,$(APPS))
 
